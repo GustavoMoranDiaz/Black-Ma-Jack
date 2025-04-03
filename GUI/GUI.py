@@ -1,5 +1,6 @@
 import pygame
 import numpy as np
+import GUI.Button as button
 class GUI:
     """ALWAYS RUN CONSTRUCTOR FIRST,
 
@@ -34,121 +35,21 @@ class GUI:
     def mainMenu(self): 
         """Running this function will open the main menu, this should always be run on startup
         """
-
-        self.font = pygame.font.Font("assets/fonts/KGPerfectPenmanship.ttf",60) # set font and size for main Menu
-        #initialization of "Start Game Button"
-        self.beginGameYShift = -100
-        self.beginGameSurface = pygame.Surface((600,100))
-        self.beginGameRect = self.beginGameSurface.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.beginGameYShift))
-
-        self.beginGameText = self.font.render("Begin Game", True, (10, 10, 10))
-        self.beginGameTextRect = self.beginGameText.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.beginGameYShift))
-        #end of initialization of "Start Game Button"
-
-        #initialization of "Instructions"
-        self.instructionsYShift = 50
-        self.instructionsSurface = pygame.Surface((600,100))
-        self.instructionsRect = self.instructionsSurface.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.instructionsYShift)) #determines button position
-
-        self.instructionsText = self.font.render("Instructions", True, (10, 10, 10))
-        self.instructionsTextRect = self.instructionsText.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.instructionsYShift)) #determines text position, keep same as button unless you hate me
-        #end of initialization of "Instructions"
-
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
         while self.__running: #begin a loop depending on the private running var
             for event in pygame.event.get(): # checks event queue
                 if event.type == pygame.QUIT: # if user presses the x on the window exit program
                     self.__running = False # exits while loop
-            self.screen.fill("black")
-            # Start of code for the "Start Game Button"
-            if pygame.mouse.get_pos()[0] in range(self.beginGameRect.left,self.beginGameRect.right) and pygame.mouse.get_pos()[1] in range(self.beginGameRect.top,self.beginGameRect.bottom): #check to see if mouse is hovering the button
-                self.beginGameSurface = pygame.transform.smoothscale(self.beginGameSurface, ((600*1.1,100*1.1))) #make the button bigger if youre hovering it to indicate it is selected
-                self.beginGameRect = self.beginGameSurface.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.beginGameYShift)) #move button into position
-                self.beginGameSurface.fill((133, 198, 255)) #color the button
-                self.beginGameText = self.font.render("Instructions", True, (10, 10, 10)) #create surface for the text on the button
-                self.beginGameTextRect = self.beginGameText.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.beginGameYShift)) # move the text into position
+            self.screen.fill((24, 64, 18))
 
-                self.screen.blit(self.beginGameSurface, self.beginGameRect) # paste button onto screen
-                self.screen.blit(self.beginGameText, self.beginGameTextRect) # paste text onto screen
-                # start of Code for decorative rotating cards
-                self.beginGameDecoSurf = pygame.image.load("assets/cards/3x/c/HEARTS-1@3x.png").convert_alpha() #documentation states that using .convert() after loading a surface dramatically increases speed
-                self.beginGameDecoSurf = pygame.transform.rotozoom(self.beginGameDecoSurf, 4*np.cos(pygame.time.get_ticks()/300),0.15)
-                self.beginGameDecoRect0 = self.beginGameDecoSurf.get_rect(center=(self.beginGameRect.left,self.SCREEN_HEIGHT/2 +self.beginGameYShift))
-                self.beginGameDecoRect1 = self.beginGameDecoSurf.get_rect(center=(self.beginGameRect.right,self.SCREEN_HEIGHT/2 +self.beginGameYShift))
+            beginGame = button.Button(self.screen, 0,-150,(600,100),(110, 224, 230),"Begin Game",self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            beginGame.DecoButton("assets/cards/3x/c/CLUB-1@3x.png","assets/cards/3x/h/HEART-1@3x.png", self.beginGame)
 
-                self.screen.blit(self.beginGameDecoSurf,self.beginGameDecoRect0)
-                self.screen.blit(self.beginGameDecoSurf,self.beginGameDecoRect1)
-                # end of Code for decorative rotating cards
-                # start of code for click detection and "screen change"
-                self.checkMouseUp = pygame.event.wait(15)
-                if self.checkMouseUp.type == pygame.MOUSEBUTTONUP:
-                    # INSERT CODE TO OPEN THE GAME ONCE THATS DEVELOPED
-                    self.__running = False # delete this once you get the actual code for the game
-                # end of code for click detection and "screen change"
-            else:
-                self.beginGameSurface = pygame.transform.smoothscale(self.beginGameSurface, ((600,100))) # make the button the original size when not hovering
-                self.beginGameRect = self.beginGameSurface.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.beginGameYShift)) #move button into position
-                self.beginGameSurface.fill((133, 198, 255)) # color the button
-                self.beginGameText = self.font.render("Begin Game", True, (10, 10, 10)) # create surface for the text on the button
-                self.beginGameTextRect = self.beginGameText.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.beginGameYShift)) # move the text into position
+            instructions = button.Button(self.screen, 0,50,(600,100),(230, 226, 110),"Instructions",self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            instructions.DecoButton("assets/cards/3x/c/CLUB-1@3x.png","assets/cards/3x/h/HEART-1@3x.png", self.instructions)
 
-                self.screen.blit(self.beginGameSurface, self.beginGameRect) # paste button onto screen
-                self.screen.blit(self.beginGameText, self.beginGameTextRect) # paste text onto screen
-                # start of Code for decorative static cards
-                self.beginGameDecoSurf = pygame.image.load("assets/cards/3x/c/CLUB-1@3x.png").convert_alpha() #documentation states that using .convert() after loading a surface dramatically increases speed
-                self.beginGameDecoSurf = pygame.transform.rotozoom(self.beginGameDecoSurf, 0,0.15)
-                self.beginGameDecoRect0 = self.beginGameDecoSurf.get_rect(center=(self.beginGameRect.left,self.SCREEN_HEIGHT/2 +self.beginGameYShift))
-                self.beginGameDecoRect1 = self.beginGameDecoSurf.get_rect(center=(self.beginGameRect.right,self.SCREEN_HEIGHT/2 +self.beginGameYShift))
-
-                self.screen.blit(self.beginGameDecoSurf,self.beginGameDecoRect0)
-                self.screen.blit(self.beginGameDecoSurf,self.beginGameDecoRect1)
-                # end of Code for decorative static cards
-            # End of code for the "Start Game Button"
-
-            # Start of code for the "Instructions Button"
-            if pygame.mouse.get_pos()[0] in range(self.instructionsRect.left,self.instructionsRect.right) and pygame.mouse.get_pos()[1] in range(self.instructionsRect.top,self.instructionsRect.bottom): #check to see if mouse is hovering the button
-                self.instructionsSurface = pygame.transform.smoothscale(self.instructionsSurface, ((600*1.1,100*1.1))) #make the button bigger if youre hovering it to indicate it is selected
-                self.instructionsRect = self.instructionsSurface.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.instructionsYShift)) #move button into position
-                self.instructionsSurface.fill((133, 198, 255)) #color the button
-                self.instructionsText = self.font.render("Begin Game", True, (10, 10, 10)) #create surface for the text on the button
-                self.instructionsTextRect = self.instructionsText.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.instructionsYShift)) # move the text into position
-
-                self.screen.blit(self.instructionsSurface, self.instructionsRect) # paste button onto screen
-                self.screen.blit(self.instructionsText, self.instructionsTextRect) # paste text onto screen
-                # start of Code for decorative rotating cards
-                self.instructionsDecoSurf = pygame.image.load("assets/cards/3x/c/CLUB-1@3x.png").convert_alpha() #documentation states that using .convert() after loading a surface dramatically increases speed
-                self.instructionsDecoSurf = pygame.transform.rotozoom(self.instructionsDecoSurf, 4*np.cos(pygame.time.get_ticks()/300),0.15)
-                self.instructionsDecoRect0 = self.instructionsDecoSurf.get_rect(center=(self.instructionsRect.left,self.SCREEN_HEIGHT/2 +self.instructionsYShift))
-                self.instructionsDecoRect1 = self.instructionsDecoSurf.get_rect(center=(self.instructionsRect.right,self.SCREEN_HEIGHT/2 +self.instructionsYShift))
-
-                self.screen.blit(self.instructionsDecoSurf,self.instructionsDecoRect0)
-                self.screen.blit(self.instructionsDecoSurf,self.instructionsDecoRect1)
-                # end of Code for decorative rotating cards
-                # start of code for click detection and "screen change"
-                self.checkMouseUp = pygame.event.wait(15)
-                if self.checkMouseUp.type == pygame.MOUSEBUTTONUP:
-                    # INSERT CODE TO OPEN THE INSTRUCTIONS ONCE THATS DEVELOPED
-                    self.__running = False # delete this once you get the actual code for the INSTRUCTIONS
-                # end of code for click detection and "screen change"
-            else:
-                self.instructionsSurface = pygame.transform.smoothscale(self.instructionsSurface, ((600,100))) # make the button the original size when not hovering
-                self.instructionsRect = self.instructionsSurface.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.instructionsYShift)) #move button into position
-                self.instructionsSurface.fill((133, 198, 255)) # color the button
-                self.instructionsText = self.font.render("Begin Game", True, (10, 10, 10)) # create surface for the text on the button
-                self.instructionsTextRect = self.instructionsText.get_rect(center=(self.SCREEN_WIDTH/2,(self.SCREEN_HEIGHT/2)+self.instructionsYShift)) # move the text into position
-
-                self.screen.blit(self.instructionsSurface, self.instructionsRect) # paste button onto screen
-                self.screen.blit(self.instructionsText, self.instructionsTextRect) # paste text onto screen
-                # start of Code for decorative static cards
-                self.instructionsDecoSurf = pygame.image.load("assets/cards/3x/c/CLUB-1@3x.png").convert_alpha() #documentation states that using .convert() after loading a surface dramatically increases speed
-                self.instructionsDecoSurf = pygame.transform.rotozoom(self.instructionsDecoSurf, 0,0.15)
-                self.instructionsDecoRect0 = self.instructionsDecoSurf.get_rect(center=(self.instructionsRect.left,self.SCREEN_HEIGHT/2 +self.instructionsYShift))
-                self.instructionsDecoRect1 = self.instructionsDecoSurf.get_rect(center=(self.instructionsRect.right,self.SCREEN_HEIGHT/2 +self.instructionsYShift))
-
-                self.screen.blit(self.instructionsDecoSurf,self.instructionsDecoRect0)
-                self.screen.blit(self.instructionsDecoSurf,self.instructionsDecoRect1)
-                # end of Code for decorative static cards
-            # End of code for the "Instructions Button"
+            quit = button.Button(self.screen, 0,250,(600,100),(230, 110, 110),"Quit",self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            quit.DecoButton("assets/cards/3x/c/CLUB-1@3x.png","assets/cards/3x/h/HEART-1@3x.png",self.quit)
 
             pygame.display.flip()
 
@@ -158,12 +59,15 @@ class GUI:
 
 
     def beginGame(self):
+        print("begin")
         pass
 
     def instructions(self):
+        print("instruc")
         pass
 
     def quit(self):
+        print("quit")
         pass
 
 
