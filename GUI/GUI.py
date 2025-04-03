@@ -67,8 +67,7 @@ class GUI:
         pass
 
     def quit(self):
-        print("quit")
-        pass
+        self.__running = False
 
 
 
