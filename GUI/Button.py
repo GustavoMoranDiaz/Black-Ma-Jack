@@ -3,7 +3,9 @@ import numpy as np
 
 class Button:
     def __init__(self,screen,XShift,YShift,buttonSize,buttonColor,buttonText,SCREEN_WIDTH,SCREEN_HEIGHT):
-        """creates a button object which can be turned into a variety of kinds of buttons
+        """creates a button object which can be turned into a variety of kinds of buttons (some of these arent actual buttons just kinda didnt wanna make 1 billion classes)
+
+            DecoButton: Cool looking button with two cards next to the button, card can change depending on if user is hovering or not
 
         Args:
             screen (surface): pass in screen object
