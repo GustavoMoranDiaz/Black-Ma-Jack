@@ -29,8 +29,8 @@ class Button:
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
         
-        self.buttonRect = self.buttonSurface.get_rect(center=(SCREEN_WIDTH/2 + self.buttonYShift,(SCREEN_HEIGHT/2)+self.buttonYShift))
-        self.buttonTextRect = self.buttonTextSurface.get_rect(center=(SCREEN_WIDTH/2 + self.buttonYShift,(SCREEN_HEIGHT/2)+self.buttonYShift))
+        self.buttonRect = self.buttonSurface.get_rect(center=(SCREEN_WIDTH/2 + self.buttonXShift,(SCREEN_HEIGHT/2)+self.buttonYShift))
+        self.buttonTextRect = self.buttonTextSurface.get_rect(center=(SCREEN_WIDTH/2 + self.buttonXShift,(SCREEN_HEIGHT/2)+self.buttonYShift))
 
     def DecoButton(self, cardFilePath, hoverCardFilePath, mouseUpAction):
         """Generates a decorative button with two swaying cards on either side which runs mouseUpAction on mouseup (click)
@@ -40,7 +40,7 @@ class Button:
             hoverCardFilePath (str): File path of the card that appears when mouse is hovering button
             mouseUpAction (function): Function you want to run after clicking button
         """        
-        if pygame.mouse.get_pos()[0] in range(self.buttonRect.left,self.buttonRect.right) and pygame.mouse.get_pos()[1] in range(self.buttonRect.top,self.buttonRect.bottom): #check to see if mouse is hovering the button
+        if self.buttonRect.collidepoint(pygame.mouse.get_pos()): #check to see if mouse is hovering the button
             self.buttonSurface = pygame.transform.smoothscale(self.buttonSurface, ((self.buttonSize[0]*1.1,self.buttonSize[1]*1.1))) #make the button bigger if youre hovering it to indicate it is selected
             self.buttonRect = self.buttonSurface.get_rect(center=(self.SCREEN_WIDTH/2 +self.buttonXShift,(self.SCREEN_HEIGHT/2)+self.buttonYShift)) #move button into position
             self.buttonSurface.fill(self.buttonColor) #color the button
@@ -81,3 +81,15 @@ class Button:
 
             self.screen.blit(self.buttonDecoSurface,self.buttonDecoRect0)
             self.screen.blit(self.buttonDecoSurface,self.buttonDecoRect1)
+
+    def TextButton(self, fontsize):
+        self.font = pygame.font.Font("assets/fonts/KGPerfectPenmanship.ttf", fontsize)
+        
+        self.buttonRect = self.buttonSurface.get_rect(center=(self.SCREEN_WIDTH/2 + self.buttonXShift,(self.SCREEN_HEIGHT/2)+self.buttonYShift)) #move button into position 
+        self.buttonSurface.fill(self.buttonColor) #color the button
+
+        self.buttonTextSurface = self.font.render(self.buttonText, True, (10, 10, 10)) # create surface for the text on the button
+        self.buttonTextRect = self.buttonTextSurface.get_rect(center=(self.SCREEN_WIDTH/2 + self.buttonXShift,(self.SCREEN_HEIGHT/2)+self.buttonYShift)) # move the text into position
+
+        self.screen.blit(self.buttonSurface, self.buttonRect) # paste button onto screen
+        self.screen.blit(self.buttonTextSurface, self.buttonTextRect) # paste text onto screen
