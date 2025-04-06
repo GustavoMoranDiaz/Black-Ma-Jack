@@ -104,14 +104,17 @@ class GUI:
 
             self.screen.fill((24, 64, 18))
 
-            beginGame = button.Button(self.screen, 0,-150,(600,100),(110, 224, 230),"Begin Game",self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            beginGame.DecoButton(self.cardIndex["CA"],self.cardIndex["HA"], self.beginGame)
+            title = button.Button(self.screen, 0,-280,(220,225,220),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            title.TextButton("Black-Ma-Jack",(600,100),60)
 
-            instructions = button.Button(self.screen, 0,50,(600,100),(230, 226, 110),"Instructions",self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            instructions.DecoButton(self.cardIndex["SA"],self.cardIndex["DA"], self.instructions)
+            beginGame = button.Button(self.screen, 0,-150,(110, 224, 230),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            beginGame.DecoButton("Begin Game",(600,100), self.cardIndex["CA"],self.cardIndex["HA"], self.beginGame)
 
-            quit = button.Button(self.screen, 0,250,(600,100),(230, 110, 110),"Quit",self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            quit.DecoButton(self.cardIndex["CA"],self.cardIndex["HA"],self.quit)
+            instructions = button.Button(self.screen, 0,50,(230, 226, 110),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            instructions.DecoButton("Instructions",(600,100), self.cardIndex["SA"],self.cardIndex["DA"], self.instructions)
+
+            quit = button.Button(self.screen, 0,250,(230, 110, 110),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            quit.DecoButton("Quit",(600,100), self.cardIndex["CA"],self.cardIndex["HA"],self.quit)
 
             pygame.display.flip() # prints everything to the screen, nice
 
@@ -119,8 +122,23 @@ class GUI:
         pygame.quit()
 
     def beginGame(self):
-        print("begin")
-        pass
+        pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
+        self.stay = True
+        while self.__running == True:
+            for event in pygame.event.get(): # checks event queue
+                if event.type == pygame.QUIT: # if user presses the x on the window exit program
+                    self.__running = False # exits while loop
+            if self.stay == False:
+                break
+                
+            self.screen.fill((24, 64, 18))
+            
+            cardTest = button.Button(self.screen, 0,0,(220,225,220),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            cardTest.CardButton(random.choice(list(self.cardIndex.values())),0.2,flipped=True)
+            
+            pygame.display.flip() # prints everything to the screen, nice
+
+            self.clock.tick(60)
     
     def instructions(self):
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
@@ -134,18 +152,16 @@ class GUI:
                 
             self.screen.fill((24, 64, 18))
             
-            self.howToPlay = button.Button(self.screen, 0, -300, (400, 60), (255, 255, 255), "How to Play Black-Ma-Jack", self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
-            self.howToPlay.TextButton(20)
+            self.howToPlay = button.Button(self.screen, 0, -300, (255, 255, 255),  self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+            self.howToPlay.TextButton("How to Play Black-Ma-Jack",(400, 60), 20)
 
-            self.returnToMenu = button.Button(self.screen,250,280,(600,100),(255,255,255),"Return to Menu",self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.returnToMenu.DecoButton("assets/cards/3x/c/CLUB-1@3x.png","assets/cards/3x/h/HEART-1@3x.png", self.breakOut)
+            self.returnToMenu = button.Button(self.screen,250,280,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.returnToMenu.DecoButton("Return to Menu",(600,100), self.cardIndex["SA"],self.cardIndex["DA"], self.breakOut)
 
             
             pygame.display.flip() # prints everything to the screen, nice
 
             self.clock.tick(60)
-
-        
 
     def quit(self):
         self.__running = False
