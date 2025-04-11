@@ -155,7 +155,9 @@ class GUI:
             self.stand = button.Button(self.screen,400,80,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             self.stand.DecoButton("Stand",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], None)
  
-        
+            self.displayScore = button.Button(self.screen,0,50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.displayScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),20)
+
             self.dealerCards = []
             self.dealerCards.append(button.Button(self.screen, -60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
             self.dealerCards.append(button.Button(self.screen, 60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))

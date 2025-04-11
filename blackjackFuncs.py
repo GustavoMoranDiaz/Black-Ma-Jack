@@ -73,7 +73,7 @@ def calculateHand(hand):
     total = 0
     numAces = 0
     for card in hand:
-        cardRank = card[1]
+        cardRank = card[0]
         if cardRank.isdigit() == True:
             cardValue = int(cardRank)
             total += cardValue
