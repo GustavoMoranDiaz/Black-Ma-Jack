@@ -3,6 +3,7 @@ import numpy as np
 import GUI.Button as button
 import os
 import random
+import blackjackFuncs
 
 class GUI:
     """ALWAYS RUN CONSTRUCTOR FIRST,
@@ -133,7 +134,9 @@ class GUI:
                 
             self.screen.fill((24, 64, 18))
             
-            self.dealerCards = []
+            
+
+            self.playerHand, self.dealerHand, = blackjackFuncs.buildHands
             self.dealerCards.append(button.Button(self.screen, -60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
             self.dealerCards.append(button.Button(self.screen, 60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
             self.dealerCards[0].CardButton(self.cardIndex["HA"],0.2)
