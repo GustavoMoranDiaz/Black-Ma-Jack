@@ -9,6 +9,7 @@ Description: This program holds the functions required to play games of blackjac
 
 import random
 import sys
+import csv
 
 
 
@@ -19,7 +20,7 @@ def placeBet():
 
 # Creates the deck. Will be replaced by csv card inputs I assume
 def createDeck():
-    suits = ['hearts','diamonds','spades','clubs']
+    suits = ['H','D','S','C']
     ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
     deck = []
     for i in range(len(suits)):
@@ -29,23 +30,42 @@ def createDeck():
     random.shuffle(deck)
     return deck
 
+def shuffle(deck):
+    with open(deck, "r", newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        rows = list(reader) #convert into a list, easier to work with in python
+
+        random.shuffle(rows) #shuffle all rows
+
+        with open(deck, "w", newline="") as outfile:
+            writer = csv.writer(outfile)
+            writer.writerows(rows)
+
 
 # Pulls a card from the deck to deal. May be bypassed by inputting cards from the csv file
-def dealCard(deck):
-    card = deck.pop(0)
+def dealCard(cards):
+    card = cards.pop(0)
     return card
 
 
 # Builds out the player and dealer hands. 
-def buildHands(deck):
-    playerHand = []
-    dealerHand = []
-    count = 0
-    while count < 2:
-        playerHand.append(dealCard(deck))
-        dealerHand.append(dealCard(deck))
-        count += 1
-    return playerHand, dealerHand
+def buildHands(deckName):
+    with open(deckName,"r", newline="") as csvfile:
+        reader = csv.reader(csvfile)
+        cards = list(reader)
+
+        playerHand = []
+        dealerHand = []
+        count = 0
+        while count < 2:
+            playerHand.append(tuple(dealCard(cards)))
+            dealerHand.append(tuple(dealCard(cards)))
+            count += 1
+    with open(deckName, "w",newline="") as outfile: #deletes the 4 cards from the csv file
+        writer = csv.writer(outfile)
+        writer.writerows(cards)
+
+    return tuple(playerHand), tuple(dealerHand)
 
 
 # Calculates hand value totals; includes ace's 1/11 mechanic
@@ -121,4 +141,4 @@ def playRound():
         print(f"Push! Its a tie, you both have {ptotal}.")
         
         
-playRound()
+# playRound()

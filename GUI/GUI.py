@@ -4,6 +4,8 @@ import GUI.Button as button
 import os
 import random
 import blackjackFuncs
+import data_gen
+import csv
 
 class GUI:
     """ALWAYS RUN CONSTRUCTOR FIRST,
@@ -33,59 +35,59 @@ class GUI:
         if pygame.font:
             self.font = pygame.font.Font("assets/fonts/KGPerfectPenmanship.ttf",60)
         
-        self.cardIndex = { # this just makes it easier to call the filepaths of the cards
-            "HA" : "assets/cards/3x/h/HEART-1@3x.png",
-            "H2" : "assets/cards/3x/h/HEART-2@3x.png",
-            "H3" : "assets/cards/3x/h/HEART-3@3x.png",
-            "H4" : "assets/cards/3x/h/HEART-4@3x.png",
-            "H5" : "assets/cards/3x/h/HEART-5@3x.png",
-            "H6" : "assets/cards/3x/h/HEART-6@3x.png",
-            "H7" : "assets/cards/3x/h/HEART-7@3x.png", 
-            "H8" : "assets/cards/3x/h/HEART-8@3x.png", 
-            "H9" : "assets/cards/3x/h/HEART-9@3x.png", 
-            "H10" : "assets/cards/3x/h/HEART-10@3x.png", 
-            "HJ" : "assets/cards/3x/h/HEART-11-JACK@3x.png",
-            "HQ" : "assets/cards/3x/h/HEART-12-QUEEN@3x.png", 
-            "HK" : "assets/cards/3x/h/HEART-13-KING@3x.png",
-            "DA" : "assets/cards/3x/d/DIAMOND-1@3x.png",
-            "D2" : "assets/cards/3x/d/DIAMOND-2@3x.png",
-            "D3" : "assets/cards/3x/d/DIAMOND-3@3x.png",
-            "D4" : "assets/cards/3x/d/DIAMOND-4@3x.png",
-            "D5" : "assets/cards/3x/d/DIAMOND-5@3x.png",
-            "D6" : "assets/cards/3x/d/DIAMOND-6@3x.png",
-            "D7" : "assets/cards/3x/d/DIAMOND-7@3x.png", 
-            "D8" : "assets/cards/3x/d/DIAMOND-8@3x.png", 
-            "D9" : "assets/cards/3x/d/DIAMOND-9@3x.png", 
-            "D10" : "assets/cards/3x/d/DIAMOND-10@3x.png", 
-            "DJ" : "assets/cards/3x/d/DIAMOND-11-JACK@3x.png",
-            "DQ" : "assets/cards/3x/d/DIAMOND-12-QUEEN@3x.png", 
-            "DK" : "assets/cards/3x/d/DIAMOND-13-KING@3x.png",
-            "CA" : "assets/cards/3x/c/CLUB-1@3x.png",
-            "C2" : "assets/cards/3x/c/CLUB-2@3x.png",
-            "C3" : "assets/cards/3x/c/CLUB-3@3x.png",
-            "C4" : "assets/cards/3x/c/CLUB-4@3x.png",
-            "C5" : "assets/cards/3x/c/CLUB-5@3x.png",
-            "C6" : "assets/cards/3x/c/CLUB-6@3x.png",
-            "C7" : "assets/cards/3x/c/CLUB-7@3x.png", 
-            "C8" : "assets/cards/3x/c/CLUB-8@3x.png", 
-            "C9" : "assets/cards/3x/c/CLUB-9@3x.png", 
-            "C10" : "assets/cards/3x/c/CLUB-10@3x.png", 
-            "CJ" : "assets/cards/3x/c/CLUB-11-JACK@3x.png",
-            "CQ" : "assets/cards/3x/c/CLUB-12-QUEEN@3x.png", 
-            "CK" : "assets/cards/3x/c/CLUB-13-KING@3x.png",
-            "SA" : "assets/cards/3x/s/SPADE-1@3x.png",
-            "S2" : "assets/cards/3x/s/SPADE-2@3x.png",
-            "S3" : "assets/cards/3x/s/SPADE-3@3x.png",
-            "S4" : "assets/cards/3x/s/SPADE-4@3x.png",
-            "S5" : "assets/cards/3x/s/SPADE-5@3x.png",
-            "S6" : "assets/cards/3x/s/SPADE-6@3x.png",
-            "S7" : "assets/cards/3x/s/SPADE-7@3x.png", 
-            "S8" : "assets/cards/3x/s/SPADE-8@3x.png", 
-            "S9" : "assets/cards/3x/s/SPADE-9@3x.png", 
-            "S10" : "assets/cards/3x/s/SPADE-10@3x.png", 
-            "SJ" : "assets/cards/3x/s/SPADE-11-JACK@3x.png",
-            "SQ" : "assets/cards/3x/s/SPADE-12-QUEEN@3x.png", 
-            "SK" : "assets/cards/3x/s/SPADE-13-KING@3x.png",
+        self.cardIndex = {
+            ("A", "H"): "assets/cards/3x/h/HEART-1@3x.png",
+            ("2", "H"): "assets/cards/3x/h/HEART-2@3x.png",
+            ("3", "H"): "assets/cards/3x/h/HEART-3@3x.png",
+            ("4", "H"): "assets/cards/3x/h/HEART-4@3x.png",
+            ("5", "H"): "assets/cards/3x/h/HEART-5@3x.png",
+            ("6", "H"): "assets/cards/3x/h/HEART-6@3x.png",
+            ("7", "H"): "assets/cards/3x/h/HEART-7@3x.png",
+            ("8", "H"): "assets/cards/3x/h/HEART-8@3x.png",
+            ("9", "H"): "assets/cards/3x/h/HEART-9@3x.png",
+            ("10", "H"): "assets/cards/3x/h/HEART-10@3x.png",
+            ("J", "H"): "assets/cards/3x/h/HEART-11-JACK@3x.png",
+            ("Q", "H"): "assets/cards/3x/h/HEART-12-QUEEN@3x.png",
+            ("K", "H"): "assets/cards/3x/h/HEART-13-KING@3x.png",
+            ("A", "D"): "assets/cards/3x/d/DIAMOND-1@3x.png",
+            ("2", "D"): "assets/cards/3x/d/DIAMOND-2@3x.png",
+            ("3", "D"): "assets/cards/3x/d/DIAMOND-3@3x.png",
+            ("4", "D"): "assets/cards/3x/d/DIAMOND-4@3x.png",
+            ("5", "D"): "assets/cards/3x/d/DIAMOND-5@3x.png",
+            ("6", "D"): "assets/cards/3x/d/DIAMOND-6@3x.png",
+            ("7", "D"): "assets/cards/3x/d/DIAMOND-7@3x.png",
+            ("8", "D"): "assets/cards/3x/d/DIAMOND-8@3x.png",
+            ("9", "D"): "assets/cards/3x/d/DIAMOND-9@3x.png",
+            ("10", "D"): "assets/cards/3x/d/DIAMOND-10@3x.png",
+            ("J", "D"): "assets/cards/3x/d/DIAMOND-11-JACK@3x.png",
+            ("Q", "D"): "assets/cards/3x/d/DIAMOND-12-QUEEN@3x.png",
+            ("K", "D"): "assets/cards/3x/d/DIAMOND-13-KING@3x.png",
+            ("A", "C"): "assets/cards/3x/c/CLUB-1@3x.png",
+            ("2", "C"): "assets/cards/3x/c/CLUB-2@3x.png",
+            ("3", "C"): "assets/cards/3x/c/CLUB-3@3x.png",
+            ("4", "C"): "assets/cards/3x/c/CLUB-4@3x.png",
+            ("5", "C"): "assets/cards/3x/c/CLUB-5@3x.png",
+            ("6", "C"): "assets/cards/3x/c/CLUB-6@3x.png",
+            ("7", "C"): "assets/cards/3x/c/CLUB-7@3x.png",
+            ("8", "C"): "assets/cards/3x/c/CLUB-8@3x.png",
+            ("9", "C"): "assets/cards/3x/c/CLUB-9@3x.png",
+            ("10", "C"): "assets/cards/3x/c/CLUB-10@3x.png",
+            ("J", "C"): "assets/cards/3x/c/CLUB-11-JACK@3x.png",
+            ("Q", "C"): "assets/cards/3x/c/CLUB-12-QUEEN@3x.png",
+            ("K", "C"): "assets/cards/3x/c/CLUB-13-KING@3x.png",
+            ("A", "S"): "assets/cards/3x/s/SPADE-1@3x.png",
+            ("2", "S"): "assets/cards/3x/s/SPADE-2@3x.png",
+            ("3", "S"): "assets/cards/3x/s/SPADE-3@3x.png",
+            ("4", "S"): "assets/cards/3x/s/SPADE-4@3x.png",
+            ("5", "S"): "assets/cards/3x/s/SPADE-5@3x.png",
+            ("6", "S"): "assets/cards/3x/s/SPADE-6@3x.png",
+            ("7", "S"): "assets/cards/3x/s/SPADE-7@3x.png",
+            ("8", "S"): "assets/cards/3x/s/SPADE-8@3x.png",
+            ("9", "S"): "assets/cards/3x/s/SPADE-9@3x.png",
+            ("10", "S"): "assets/cards/3x/s/SPADE-10@3x.png",
+            ("J", "S"): "assets/cards/3x/s/SPADE-11-JACK@3x.png",
+            ("Q", "S"): "assets/cards/3x/s/SPADE-12-QUEEN@3x.png",
+            ("K", "S"): "assets/cards/3x/s/SPADE-13-KING@3x.png",
             }
 
         self.__running = True
@@ -109,13 +111,13 @@ class GUI:
             title.TextButton("Black-Ma-Jack",(600,100),60)
 
             beginGame = button.Button(self.screen, 0,-150,(110, 224, 230),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            beginGame.DecoButton("Begin Game",(600,100), self.cardIndex["CA"],self.cardIndex["HA"], self.beginGame)
+            beginGame.DecoButton("Begin Game",(600,100), self.cardIndex[("A","C")],self.cardIndex[("A","H")], self.beginGame)
 
             instructions = button.Button(self.screen, 0,50,(230, 226, 110),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            instructions.DecoButton("Instructions",(600,100), self.cardIndex["SA"],self.cardIndex["DA"], self.instructions)
+            instructions.DecoButton("Instructions",(600,100), self.cardIndex[("A","C")],self.cardIndex[("A","H")], self.instructions)
 
             quit = button.Button(self.screen, 0,250,(230, 110, 110),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            quit.DecoButton("Quit",(600,100), self.cardIndex["CA"],self.cardIndex["HA"],self.quit)
+            quit.DecoButton("Quit",(600,100), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.quit)
 
             pygame.display.flip() # prints everything to the screen, nice
 
@@ -123,30 +125,48 @@ class GUI:
         pygame.quit()
 
     def beginGame(self):
+        deckName = "cardN.csv"
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
         self.stay = True
+        data_gen.generateDeck()
+        blackjackFuncs.shuffle(deckName)
+        # deck = open(deckName,"r")
+        # reader = csv.reader(deck)
+        # cards = list(reader) #opens the deck csv file which is shuffled and then turns it into a list
+
+        self.playerHand, self.dealerHand, = blackjackFuncs.buildHands(deckName) #creates both hands
+
+        flag = 1
+
+        print(blackjackFuncs.calculateHand(self.playerHand))
+
         while self.__running == True:
             for event in pygame.event.get(): # checks event queue
                 if event.type == pygame.QUIT: # if user presses the x on the window exit program
                     self.__running = False # exits while loop
             if self.stay == False:
                 break
-                
+            
             self.screen.fill((24, 64, 18))
             
-            
+            self.hit = button.Button(self.screen,400,280,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.hit.DecoButton("Hit",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], None)
 
-            self.playerHand, self.dealerHand, = blackjackFuncs.buildHands
+            self.stand = button.Button(self.screen,400,80,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.stand.DecoButton("Stand",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], None)
+ 
+        
+            self.dealerCards = []
             self.dealerCards.append(button.Button(self.screen, -60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
             self.dealerCards.append(button.Button(self.screen, 60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.dealerCards[0].CardButton(self.cardIndex["HA"],0.2)
-            self.dealerCards[1].CardButton(self.cardIndex["HA"],0.2, flipped = True)
+            self.dealerCards[0].CardButton(self.cardIndex[self.dealerHand[0]],0.2, flipped = True)
+            self.dealerCards[1].CardButton(self.cardIndex[self.dealerHand[1]],0.2)
 
             self.playerCards = []
             self.playerCards.append(button.Button(self.screen, -60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
             self.playerCards.append(button.Button(self.screen, 60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.playerCards[0].CardButton(self.cardIndex["HA"],0.2)
-            self.playerCards[1].CardButton(self.cardIndex["SA"],0.2)
+            self.playerCards[0].CardButton(self.cardIndex[self.playerHand[0]],0.2)
+            self.playerCards[1].CardButton(self.cardIndex[self.playerHand[1]],0.2)
 
             pygame.display.flip() # prints everything to the screen, nice
 
@@ -168,7 +188,7 @@ class GUI:
             self.howToPlay.TextButton("How to Play Black-Ma-Jack",(400, 60), 20)
 
             self.returnToMenu = button.Button(self.screen,250,280,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.returnToMenu.DecoButton("Return to Menu",(600,100), self.cardIndex["SA"],self.cardIndex["DA"], self.breakOut)
+            self.returnToMenu.DecoButton("Return to Menu",(600,100), self.cardIndex[("A","C")],self.cardIndex[("A","S")], self.breakOut)
 
             
             pygame.display.flip() # prints everything to the screen, nice
