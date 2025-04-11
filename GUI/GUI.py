@@ -150,13 +150,17 @@ class GUI:
             self.screen.fill((24, 64, 18))
             
             self.hit = button.Button(self.screen,400,280,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.hit.DecoButton("Hit",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], None)
+            self.hit.DecoButton("Hit",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.CSVPlayRound("hit"))
 
             self.stand = button.Button(self.screen,400,80,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.stand.DecoButton("Stand",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], None)
- 
-            self.displayScore = button.Button(self.screen,0,50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.displayScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),20)
+            self.stand.DecoButton("Stand",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.CSVPlayRound("stand"))
+
+            self.playerScore = button.Button(self.screen,0,50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.playerScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),20)
+
+            self.dealerScore = button.Button(self.screen,0,-50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.dealerScore.TextButton(f"Dealer's Score is currently: ?", (400,100),20)
+
 
             self.dealerCards = []
             self.dealerCards.append(button.Button(self.screen, -60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
@@ -167,6 +171,7 @@ class GUI:
             self.playerCards = []
             self.playerCards.append(button.Button(self.screen, -60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
             self.playerCards.append(button.Button(self.screen, 60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+
             self.playerCards[0].CardButton(self.cardIndex[self.playerHand[0]],0.2)
             self.playerCards[1].CardButton(self.cardIndex[self.playerHand[1]],0.2)
 

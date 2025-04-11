@@ -139,6 +139,5 @@ def playRound():
         print("Push! Its a tie, you both have blackjack.")
     elif ptotal == dtotal:
         print(f"Push! Its a tie, you both have {ptotal}.")
-        
-        
+
 # playRound()
