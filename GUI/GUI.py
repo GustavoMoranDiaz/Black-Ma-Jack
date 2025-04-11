@@ -133,9 +133,18 @@ class GUI:
                 
             self.screen.fill((24, 64, 18))
             
-            cardTest = button.Button(self.screen, 0,0,(220,225,220),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            cardTest.CardButton(random.choice(list(self.cardIndex.values())),0.2,flipped=True)
-            
+            self.dealerCards = []
+            self.dealerCards.append(button.Button(self.screen, -60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+            self.dealerCards.append(button.Button(self.screen, 60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+            self.dealerCards[0].CardButton(self.cardIndex["HA"],0.2)
+            self.dealerCards[1].CardButton(self.cardIndex["HA"],0.2, flipped = True)
+
+            self.playerCards = []
+            self.playerCards.append(button.Button(self.screen, -60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+            self.playerCards.append(button.Button(self.screen, 60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+            self.playerCards[0].CardButton(self.cardIndex["HA"],0.2)
+            self.playerCards[1].CardButton(self.cardIndex["SA"],0.2)
+
             pygame.display.flip() # prints everything to the screen, nice
 
             self.clock.tick(60)

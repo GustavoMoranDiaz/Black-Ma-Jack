@@ -58,7 +58,6 @@ class Button:
             # start of code for click detection and "screen change"
             self.checkMouseUp = pygame.event.wait(15)
             if self.checkMouseUp.type == pygame.MOUSEBUTTONUP:
-                # INSERT CODE TO OPEN THE GAME ONCE THATS DEVELOPED
                 mouseUpAction() 
             # end of code for click detection and "screen change"
         else:
@@ -93,7 +92,7 @@ class Button:
         self.screen.blit(self.buttonSurface, self.buttonRect) # paste button onto screen
         self.screen.blit(self.buttonTextSurface, self.buttonTextRect) # paste text onto screen
 
-    def CardButton(self, cardFilePath, scaleCoeff, angle = 0, flipped = False): 
+    def CardButton(self, cardFilePath, scaleCoeff, angle = 0, flipped = False, mouseUpAction = lambda: None): 
         if flipped == False:
             self.cardSurface = pygame.image.load(cardFilePath).convert_alpha()
         else:
@@ -106,6 +105,12 @@ class Button:
             self.cardSurface = pygame.transform.rotozoom(self.cardSurface, 4*np.cos(pygame.time.get_ticks()/300), 1.15)
             self.cardRect = self.cardSurface.get_rect(center=(self.SCREEN_WIDTH/2 +self.buttonXShift,self.SCREEN_HEIGHT/2 +self.buttonYShift))
             self.screen.blit(self.cardSurface,self.cardRect)
+            self.checkMouseUp = pygame.event.wait(15)
+            if self.checkMouseUp.type == pygame.MOUSEBUTTONUP:
+                # INSERT CODE TO OPEN THE GAME ONCE THATS DEVELOPED
+                mouseUpAction() 
+            # end of code for click detection and "screen change"
+            
         else:
             self.cardSurface = pygame.transform.rotozoom(self.cardSurface, 0, 1)
             self.cardRect = self.cardSurface.get_rect(center=(self.SCREEN_WIDTH/2 +self.buttonXShift,self.SCREEN_HEIGHT/2 +self.buttonYShift))
