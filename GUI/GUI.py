@@ -150,16 +150,19 @@ class GUI:
             self.screen.fill((24, 64, 18))
             
             self.hit = button.Button(self.screen,400,280,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.hit.DecoButton("Hit",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], bj.CSVPlayRound("hit"))
+            self.hit.DecoButton("Hit",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], bj.hit)
 
             self.stand = button.Button(self.screen,400,80,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.stand.DecoButton("Stand",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], bj.CSVPlayRound("stand"))
+            self.stand.DecoButton("Stand",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], bj.stand)
+
+            self.result = button.Button(self.screen,400,180,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.stand.DecoButton("Result",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], bj.result)
 
             self.playerScore = button.Button(self.screen,0,50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             self.playerScore.TextButton(f"Your Score is currently: {bj.calculateHand(self.playerHand)}", (400,100),20)
 
             self.dealerScore = button.Button(self.screen,0,-50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.dealerScore.TextButton(f"Dealer's Score is currently: ?", (400,100),20)
+            self.dealerScore.TextButton(f"Dealer's Score is currently: {bj.calculateHand(self.dealerHand)}", (400,100),20)
 
 
             self.dealerCards = []
