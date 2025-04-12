@@ -93,40 +93,32 @@ def calculateHand(hand):
     return total
 
 
-# Plays out one hand of blackjack each call
-def playRound():
-    flag = 1
-    wager = placeBet()
-    deck = createDeck()
-    playerHand, dealerHand = buildHands(deck)
 
-    while flag == 1:
-        #During the player's turn the dealer is only showing the second card in their hand
-        ptotal = calculateHand(playerHand)
-        print(f"Your hand is {playerHand} and its value is {ptotal}")
-        print(f"The dealer is showing {dealerHand[1]}")
-        
-        h_s = input("Would you like to hit or stand? (h/s): ")
-        if h_s.lower() == "h":
-            playerHand.append(dealCard(deck))
-            ptotal = calculateHand(playerHand)
-            if ptotal > 21:
-                print(f"Your hand is now {playerHand}, and its value is {ptotal}, which means you bust and lose!")
-                sys.exit(-1)
-        elif h_s.lower() == "s":
-            break
-        else: print("Unrecognized command, please try again.")
 
-    # Player's turn is over, now dealer flips their hidden card
+def hit(deck,playerHand,dealerHand):
+    playerHand.append(dealCard(deck))
+    ptotal = calculateHand(playerHand)
+    if ptotal > 21:
+        print(f"Your hand is now {playerHand}, and its value is {ptotal}, which means you bust and lose!")
+        sys.exit(-1)
+    print(f"Your hand is {playerHand} and its value is {ptotal}")
+    print(f"The dealer is showing {dealerHand[1]}")
+    return playerHand, ptotal
+    
+
+def stand(deck,playerHand,dealerHand):
+    global flag
+    flag = 0
     dtotal = calculateHand(dealerHand)
-    print(f"The dealer's hand is {dealerHand} and its value is {dtotal}")
-
+    ptotal = calculateHand(playerHand)
     while dtotal < 17:
         dealerHand.append(dealCard(deck))
         dtotal = calculateHand(dealerHand)
         print(f"The dealer hits and their hand is now {dealerHand} and its value is {dtotal}")
+    return playerHand, ptotal, dealerHand, dtotal
 
-    # Win/lose conditions
+
+def result(playerHand, ptotal, dealerHand, dtotal):
     if dtotal > 21:
         print("The dealer busts and you win!")
     elif ptotal == 21 and dtotal != 21:
@@ -139,5 +131,31 @@ def playRound():
         print("Push! Its a tie, you both have blackjack.")
     elif ptotal == dtotal:
         print(f"Push! Its a tie, you both have {ptotal}.")
+        
+        
+        
 
-# playRound()
+# Plays out one hand of blackjack each call
+
+# Kept in for testing purposes as I split up into hit/stand/result funcs
+def playRound():
+    global flag
+    flag = 1
+    wager = placeBet()
+    deck = createDeck()
+    playerHand, dealerHand = buildHands(deck)
+    ptotal = calculateHand(playerHand)
+    print(f"Your hand is {playerHand} and its value is {ptotal}")
+    print(f"The dealer is showing {dealerHand[1]}")
+
+    while flag == 1:
+        h_s = input("Would you like to hit or stand? (h/s): ")
+        if h_s.lower() == "h":
+            playerhand,ptotal = hit(deck,playerHand,dealerHand)
+        elif h_s.lower() == "s":
+            playerHand, ptotal, dealerHand, dtotal = stand(deck,playerHand,dealerHand)
+    
+    result(playerHand, ptotal, dealerHand, dtotal)
+        
+        
+playRound()
