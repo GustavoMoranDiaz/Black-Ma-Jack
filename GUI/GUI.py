@@ -3,7 +3,7 @@ import numpy as np
 import GUI.Button as button
 import os
 import random
-import independentBJFuncs as bj
+import blackjackFuncs
 import data_gen
 import csv
 
@@ -129,16 +129,16 @@ class GUI:
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
         self.stay = True
         data_gen.generateDeck()
-        bj.shuffle(deckName)
+        blackjackFuncs.shuffle(deckName)
         # deck = open(deckName,"r")
         # reader = csv.reader(deck)
         # cards = list(reader) #opens the deck csv file which is shuffled and then turns it into a list
 
-        self.playerHand, self.dealerHand, = bj.buildHands(deckName) #creates both hands
+        self.playerHand, self.dealerHand, = blackjackFuncs.buildHands(deckName) #creates both hands
 
         flag = 1
 
-        print(bj.calculateHand(self.playerHand))
+        print(blackjackFuncs.calculateHand(self.playerHand))
 
         while self.__running == True:
             for event in pygame.event.get(): # checks event queue
@@ -150,19 +150,19 @@ class GUI:
             self.screen.fill((24, 64, 18))
             
             self.hit = button.Button(self.screen,400,280,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.hit.DecoButton("Hit",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], bj.hit)
+            self.hit.DecoButton("Hit",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.hit)
 
             self.stand = button.Button(self.screen,400,80,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.stand.DecoButton("Stand",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], bj.stand)
+            self.stand.DecoButton("Stand",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.stand)
 
             self.result = button.Button(self.screen,400,180,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.stand.DecoButton("Result",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], bj.result)
+            self.stand.DecoButton("Result",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.result)
 
             self.playerScore = button.Button(self.screen,0,50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.playerScore.TextButton(f"Your Score is currently: {bj.calculateHand(self.playerHand)}", (400,100),20)
+            self.playerScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),20)
 
             self.dealerScore = button.Button(self.screen,0,-50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.dealerScore.TextButton(f"Dealer's Score is currently: {bj.calculateHand(self.dealerHand)}", (400,100),20)
+            self.dealerScore.TextButton(f"Dealer's Score is currently: {blackjackFuncs.calculateHand(self.dealerHand)}", (400,100),20)
 
 
             self.dealerCards = []
