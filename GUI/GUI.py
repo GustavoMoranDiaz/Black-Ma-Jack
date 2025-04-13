@@ -138,6 +138,8 @@ class GUI:
         self.playerHand, self.dealerHand, = blackjackFuncs.buildHands(deckName) #creates both hands
         self.dealerCards = [] 
         self.playerCards = []
+        
+        self.__waitFlag = False
 
         while self.__running == True:
             self.events = pygame.event.get()
@@ -146,39 +148,100 @@ class GUI:
                     self.__running = False # exits while loop
             if self.stay == False:
                 break
-
+            
             if blackjackFuncs.calculateHand(self.playerHand) > 21: #detect if player has busted, if so, dont draw anything else, just the loss message
+                if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                    pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                    self.__waitFlag = True
                 self.screen.fill((24, 64, 18))
                 self.bust = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-                self.bust.TextButton("PLAYER BUST, YOU LOSE",(700,300),(250,10,10),40)
+                self.bust.TextButton("PLAYER BUST, YOU LOSE",(700,300),(230, 110, 110),40)
+
             else:
-
                 self.screen.fill((24, 64, 18))
-                
-                self.hit = button.Button(self.screen,400,280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-                self.hit.DecoButton("Hit",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")],self.events, lambda: csvBJ.hit(self.playerHand))
+                match csvBJ.getResult():
+                    case "playerTurn":
+                        
+                        self.hit = button.Button(self.screen,400,280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.hit.DecoButton("Hit",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")],self.events, lambda: csvBJ.hit(self.playerHand))
 
-                self.stand = button.Button(self.screen,400,80,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-                self.stand.DecoButton("Stand",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")],self.events, blackjackFuncs.stand)
+                        self.stand = button.Button(self.screen,400,80,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.stand.DecoButton("Stand",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")],self.events, lambda:csvBJ.stand(self.playerHand,self.dealerHand))
 
-                self.playerScore = button.Button(self.screen,0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-                self.playerScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),(255,255,255),20)
+                        self.playerScore = button.Button(self.screen,0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.playerScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),(255,255,255),20)
 
-                self.dealerScore = button.Button(self.screen,0,-50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-                self.dealerScore.TextButton(f"Dealer's Score is currently: {blackjackFuncs.calculateHand(self.dealerHand)}", (400,100),(255,255,255),20)
+                        if csvBJ.getResult() != "playerTurn":
+                            self.dealerScore = button.Button(self.screen,0,-50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                            self.dealerScore.TextButton(f"Dealer's Score is currently: {blackjackFuncs.calculateHand(self.dealerHand)}", (400,100),(255,255,255),20)
+                        else:
+                            self.dealerScore = button.Button(self.screen,0,-50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                            self.dealerScore.TextButton(f"Dealer's Score is currently: ?", (400,100),(255,255,255),20)
 
-                
-                self.playerCards = []
+                        
+                        self.playerCards = []
 
-                for i in range(len(self.playerHand)):
-                    self.playerCards.append(button.Button(self.screen,60-(i*(120)),250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-                    self.playerCards[i].CardButton(self.cardIndex[self.playerHand[i]])
-                
-                self.dealerCards = [] 
+                        for i in range(len(self.playerHand)):
+                            self.playerCards.append(button.Button(self.screen,60-(i*(120)),250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                            self.playerCards[i].CardButton(self.cardIndex[self.playerHand[i]])
+                        
+                        self.dealerCards = [] 
 
-                for i in range(len(self.dealerHand)):
-                    self.dealerCards.append(button.Button(self.screen,60-i*(120),-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-                    self.dealerCards[i].CardButton(self.cardIndex[self.dealerHand[i]])
+                        for i in range(len(self.dealerHand)):
+                            if csvBJ.getResult() != "playerTurn":
+                                self.dealerCards.append(button.Button(self.screen,60-i*(120),-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                                self.dealerCards[i].CardButton(self.cardIndex[self.dealerHand[i]])
+                            else:
+                                self.dealerCards.append(button.Button(self.screen,60-i*(120),-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                                if i == 1:
+                                    self.dealerCards[i].CardButton(self.cardIndex[self.dealerHand[i]],flipped=True)
+                                else:
+                                    self.dealerCards[i].CardButton(self.cardIndex[self.dealerHand[i]])
+
+                    case "dBust":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.dbust = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.dbust.TextButton("DEALER BUST, YOU WIN",(700,300),(110, 224, 230),40)
+                    case "bjWin":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.bjwin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.bjwin.TextButton("BLACKJACK!, YOU WIN",(700,300),(110, 224, 230),40)
+                    case "scoreLoss":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.scoreLoss = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.scoreLoss.TextButton("DEALER WINS, YOU LOSE",(700,300),(230, 110, 110),40)
+                    case "scoreWin":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.scoreWin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.scoreWin.TextButton("DEALER LOSES, YOU WIN",(700,300),(110, 224, 230),40)
+                    case "bjPush":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.bjPush = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.bjPush.TextButton("BLACKJACK PUSH",(700,300),(230, 226, 110),40)
+                    case "push":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.push = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.push.TextButton("PUSH",(700,300),(230, 226, 110),40)
+                    case _:
+                        pass
 
             pygame.display.flip() # prints everything to the screen, nice
 
