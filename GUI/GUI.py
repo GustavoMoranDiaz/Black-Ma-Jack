@@ -107,17 +107,17 @@ class GUI:
 
             self.screen.fill((24, 64, 18))
 
-            title = button.Button(self.screen, 0,-280,(220,225,220),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            title.TextButton("Black-Ma-Jack",(600,100),60)
+            title = button.Button(self.screen, 0,-280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            title.TextButton("Black-Ma-Jack",(600,100),(220,225,220),60)
 
-            beginGame = button.Button(self.screen, 0,-150,(110, 224, 230),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            beginGame.DecoButton("Begin Game",(600,100), self.cardIndex[("A","C")],self.cardIndex[("A","H")], self.beginGame)
+            beginGame = button.Button(self.screen, 0,-150,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            beginGame.DecoButton("Begin Game",(600,100),(110, 224, 230), self.cardIndex[("A","C")],self.cardIndex[("A","H")], self.beginGame)
 
-            instructions = button.Button(self.screen, 0,50,(230, 226, 110),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            instructions.DecoButton("Instructions",(600,100), self.cardIndex[("A","C")],self.cardIndex[("A","H")], self.instructions)
+            instructions = button.Button(self.screen, 0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            instructions.DecoButton("Instructions",(600,100),(230, 226, 110), self.cardIndex[("A","C")],self.cardIndex[("A","H")], self.instructions)
 
-            quit = button.Button(self.screen, 0,250,(230, 110, 110),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            quit.DecoButton("Quit",(600,100), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.quit)
+            quit = button.Button(self.screen, 0,250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            quit.DecoButton("Quit",(600,100),(230, 110, 110), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.quit)
 
             pygame.display.flip() # prints everything to the screen, nice
 
@@ -149,31 +149,28 @@ class GUI:
             
             self.screen.fill((24, 64, 18))
             
-            self.hit = button.Button(self.screen,400,280,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.hit.DecoButton("Hit",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.hit)
+            self.hit = button.Button(self.screen,400,280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.hit.DecoButton("Hit",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.hit)
 
-            self.stand = button.Button(self.screen,400,80,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.stand.DecoButton("Stand",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.stand)
+            self.stand = button.Button(self.screen,400,80,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.stand.DecoButton("Stand",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.stand)
 
-            self.result = button.Button(self.screen,400,180,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.stand.DecoButton("Result",(300,100),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.result)
+            self.playerScore = button.Button(self.screen,0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.playerScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),(255,255,255),20)
 
-            self.playerScore = button.Button(self.screen,0,50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.playerScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),20)
-
-            self.dealerScore = button.Button(self.screen,0,-50,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.dealerScore.TextButton(f"Dealer's Score is currently: {blackjackFuncs.calculateHand(self.dealerHand)}", (400,100),20)
+            self.dealerScore = button.Button(self.screen,0,-50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.dealerScore.TextButton(f"Dealer's Score is currently: {blackjackFuncs.calculateHand(self.dealerHand)}", (400,100),(255,255,255),20)
 
 
             self.dealerCards = []
-            self.dealerCards.append(button.Button(self.screen, -60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.dealerCards.append(button.Button(self.screen, 60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+            self.dealerCards.append(button.Button(self.screen, -60, -250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+            self.dealerCards.append(button.Button(self.screen, 60, -250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
             self.dealerCards[0].CardButton(self.cardIndex[self.dealerHand[0]],0.2, flipped = True)
             self.dealerCards[1].CardButton(self.cardIndex[self.dealerHand[1]],0.2)
 
             self.playerCards = []
-            self.playerCards.append(button.Button(self.screen, -60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.playerCards.append(button.Button(self.screen, 60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+            self.playerCards.append(button.Button(self.screen, -60, 250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+            self.playerCards.append(button.Button(self.screen, 60, 250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
 
             self.playerCards[0].CardButton(self.cardIndex[self.playerHand[0]],0.2)
             self.playerCards[1].CardButton(self.cardIndex[self.playerHand[1]],0.2)
@@ -194,11 +191,11 @@ class GUI:
                 
             self.screen.fill((24, 64, 18))
             
-            self.howToPlay = button.Button(self.screen, 0, -300, (255, 255, 255),  self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
-            self.howToPlay.TextButton("How to Play Black-Ma-Jack",(400, 60), 20)
+            self.howToPlay = button.Button(self.screen, 0, -300, self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+            self.howToPlay.TextButton("How to Play Black-Ma-Jack",(400, 60),(255, 255, 255), 20)
 
-            self.returnToMenu = button.Button(self.screen,250,280,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.returnToMenu.DecoButton("Return to Menu",(600,100), self.cardIndex[("A","C")],self.cardIndex[("A","S")], self.breakOut)
+            self.returnToMenu = button.Button(self.screen,250,280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.returnToMenu.DecoButton("Return to Menu",(600,100),(255,255,255), self.cardIndex[("A","C")],self.cardIndex[("A","S")], self.breakOut)
 
             
             pygame.display.flip() # prints everything to the screen, nice
