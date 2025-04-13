@@ -100,9 +100,11 @@ class GUI:
     def mainMenu(self): 
         """Running this function will open the main menu, this should always be run on startup
         """
+
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
         while self.__running: #begin a loop depending on the private running var
-            for event in pygame.event.get(): # checks event queue
+            self.events = pygame.event.get()
+            for event in self.events: # checks event queue
                 if event.type == pygame.QUIT: # if user presses the x on the window exit program
                     self.__running = False # exits while loop
 
@@ -112,13 +114,13 @@ class GUI:
             title.TextButton("Black-Ma-Jack",(600,100),(220,225,220),60)
 
             beginGame = button.Button(self.screen, 0,-150,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            beginGame.DecoButton("Begin Game",(600,100),(110, 224, 230), self.cardIndex[("A","C")],self.cardIndex[("A","H")], self.beginGame)
+            beginGame.DecoButton("Begin Game",(600,100),(110, 224, 230), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.beginGame)
 
             instructions = button.Button(self.screen, 0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            instructions.DecoButton("Instructions",(600,100),(230, 226, 110), self.cardIndex[("A","C")],self.cardIndex[("A","H")], self.instructions)
+            instructions.DecoButton("Instructions",(600,100),(230, 226, 110), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.instructions)
 
             quit = button.Button(self.screen, 0,250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            quit.DecoButton("Quit",(600,100),(230, 110, 110), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.quit)
+            quit.DecoButton("Quit",(600,100),(230, 110, 110), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.quit)
 
             pygame.display.flip() # prints everything to the screen, nice
 
@@ -132,11 +134,14 @@ class GUI:
         data_gen.generateDeck()
         blackjackFuncs.shuffle(deckName)
         csvBJ = CSVBlackJack.CSVBlackJack(deckName)
-
+        # very important note, cards =! hand, hand is the tuples that represent the game state, cards are used to draw the cards on screen
         self.playerHand, self.dealerHand, = blackjackFuncs.buildHands(deckName) #creates both hands
+        self.dealerCards = [] 
+        self.playerCards = []
 
         while self.__running == True:
-            for event in pygame.event.get(): # checks event queue
+            self.events = pygame.event.get()
+            for event in self.events: # checks event queue
                 if event.type == pygame.QUIT: # if user presses the x on the window exit program
                     self.__running = False # exits while loop
             if self.stay == False:
@@ -151,10 +156,10 @@ class GUI:
                 self.screen.fill((24, 64, 18))
                 
                 self.hit = button.Button(self.screen,400,280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-                self.hit.DecoButton("Hit",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")], lambda: csvBJ.hit(self.playerHand))
+                self.hit.DecoButton("Hit",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")],self.events, lambda: csvBJ.hit(self.playerHand))
 
                 self.stand = button.Button(self.screen,400,80,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-                self.stand.DecoButton("Stand",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.stand)
+                self.stand.DecoButton("Stand",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")],self.events, blackjackFuncs.stand)
 
                 self.playerScore = button.Button(self.screen,0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                 self.playerScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),(255,255,255),20)
@@ -162,19 +167,18 @@ class GUI:
                 self.dealerScore = button.Button(self.screen,0,-50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                 self.dealerScore.TextButton(f"Dealer's Score is currently: {blackjackFuncs.calculateHand(self.dealerHand)}", (400,100),(255,255,255),20)
 
-
-                self.dealerCards = []
-                self.dealerCards.append(button.Button(self.screen, -60, -250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-                self.dealerCards.append(button.Button(self.screen, 60, -250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-                self.dealerCards[0].CardButton(self.cardIndex[self.dealerHand[0]],0.2, flipped = True)
-                self.dealerCards[1].CardButton(self.cardIndex[self.dealerHand[1]],0.2)
-
+                
                 self.playerCards = []
-                self.playerCards.append(button.Button(self.screen, -60, 250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-                self.playerCards.append(button.Button(self.screen, 60, 250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
 
-                self.playerCards[0].CardButton(self.cardIndex[self.playerHand[0]],0.2)
-                self.playerCards[1].CardButton(self.cardIndex[self.playerHand[1]],0.2)
+                for i in range(len(self.playerHand)):
+                    self.playerCards.append(button.Button(self.screen,60-(i*(120)),250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                    self.playerCards[i].CardButton(self.cardIndex[self.playerHand[i]])
+                
+                self.dealerCards = [] 
+
+                for i in range(len(self.dealerHand)):
+                    self.dealerCards.append(button.Button(self.screen,60-i*(120),-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                    self.dealerCards[i].CardButton(self.cardIndex[self.dealerHand[i]])
 
             pygame.display.flip() # prints everything to the screen, nice
 

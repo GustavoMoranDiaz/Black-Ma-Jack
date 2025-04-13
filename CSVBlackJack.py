@@ -15,7 +15,7 @@ class CSVBlackJack():
         with open(self.__deckName,"r", newline="") as csvfile:
             reader = csv.reader(csvfile)
             cards = list(reader)
-            hand.append(cards.pop(0))
+            hand.append(tuple(cards.pop(0)))
             with open(self.__deckName, "w",newline="") as outfile:
                 writer = csv.writer(outfile)
                 writer.writerows(cards)
