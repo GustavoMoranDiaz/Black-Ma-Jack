@@ -65,7 +65,7 @@ def buildHands(deckName):
         writer = csv.writer(outfile)
         writer.writerows(cards)
 
-    return tuple(playerHand), tuple(dealerHand)
+    return playerHand, dealerHand
 
 
 # Calculates hand value totals; includes ace's 1/11 mechanic

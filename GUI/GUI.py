@@ -6,6 +6,7 @@ import random
 import blackjackFuncs
 import data_gen
 import csv
+import CSVBlackJack
 
 class GUI:
     """ALWAYS RUN CONSTRUCTOR FIRST,
@@ -130,15 +131,9 @@ class GUI:
         self.stay = True
         data_gen.generateDeck()
         blackjackFuncs.shuffle(deckName)
-        # deck = open(deckName,"r")
-        # reader = csv.reader(deck)
-        # cards = list(reader) #opens the deck csv file which is shuffled and then turns it into a list
+        csvBJ = CSVBlackJack.CSVBlackJack(deckName)
 
         self.playerHand, self.dealerHand, = blackjackFuncs.buildHands(deckName) #creates both hands
-
-        flag = 1
-
-        print(blackjackFuncs.calculateHand(self.playerHand))
 
         while self.__running == True:
             for event in pygame.event.get(): # checks event queue
@@ -146,34 +141,40 @@ class GUI:
                     self.__running = False # exits while loop
             if self.stay == False:
                 break
-            
-            self.screen.fill((24, 64, 18))
-            
-            self.hit = button.Button(self.screen,400,280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.hit.DecoButton("Hit",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.hit)
 
-            self.stand = button.Button(self.screen,400,80,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.stand.DecoButton("Stand",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.stand)
+            if blackjackFuncs.calculateHand(self.playerHand) > 21: #detect if player has busted, if so, dont draw anything else, just the loss message
+                self.screen.fill((24, 64, 18))
+                self.bust = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                self.bust.TextButton("PLAYER BUST, YOU LOSE",(700,300),(250,10,10),40)
+            else:
 
-            self.playerScore = button.Button(self.screen,0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.playerScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),(255,255,255),20)
+                self.screen.fill((24, 64, 18))
+                
+                self.hit = button.Button(self.screen,400,280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                self.hit.DecoButton("Hit",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")], lambda: csvBJ.hit(self.playerHand))
 
-            self.dealerScore = button.Button(self.screen,0,-50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.dealerScore.TextButton(f"Dealer's Score is currently: {blackjackFuncs.calculateHand(self.dealerHand)}", (400,100),(255,255,255),20)
+                self.stand = button.Button(self.screen,400,80,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                self.stand.DecoButton("Stand",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")], blackjackFuncs.stand)
+
+                self.playerScore = button.Button(self.screen,0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                self.playerScore.TextButton(f"Your Score is currently: {blackjackFuncs.calculateHand(self.playerHand)}", (400,100),(255,255,255),20)
+
+                self.dealerScore = button.Button(self.screen,0,-50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                self.dealerScore.TextButton(f"Dealer's Score is currently: {blackjackFuncs.calculateHand(self.dealerHand)}", (400,100),(255,255,255),20)
 
 
-            self.dealerCards = []
-            self.dealerCards.append(button.Button(self.screen, -60, -250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.dealerCards.append(button.Button(self.screen, 60, -250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.dealerCards[0].CardButton(self.cardIndex[self.dealerHand[0]],0.2, flipped = True)
-            self.dealerCards[1].CardButton(self.cardIndex[self.dealerHand[1]],0.2)
+                self.dealerCards = []
+                self.dealerCards.append(button.Button(self.screen, -60, -250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                self.dealerCards.append(button.Button(self.screen, 60, -250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                self.dealerCards[0].CardButton(self.cardIndex[self.dealerHand[0]],0.2, flipped = True)
+                self.dealerCards[1].CardButton(self.cardIndex[self.dealerHand[1]],0.2)
 
-            self.playerCards = []
-            self.playerCards.append(button.Button(self.screen, -60, 250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.playerCards.append(button.Button(self.screen, 60, 250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                self.playerCards = []
+                self.playerCards.append(button.Button(self.screen, -60, 250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                self.playerCards.append(button.Button(self.screen, 60, 250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
 
-            self.playerCards[0].CardButton(self.cardIndex[self.playerHand[0]],0.2)
-            self.playerCards[1].CardButton(self.cardIndex[self.playerHand[1]],0.2)
+                self.playerCards[0].CardButton(self.cardIndex[self.playerHand[0]],0.2)
+                self.playerCards[1].CardButton(self.cardIndex[self.playerHand[1]],0.2)
 
             pygame.display.flip() # prints everything to the screen, nice
 

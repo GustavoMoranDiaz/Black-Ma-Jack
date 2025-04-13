@@ -1,7 +1,7 @@
 import pygame
 import numpy as np
 
-class Button(pygame.sprite.Sprite): #buttons are a child of sprite from pygame
+class Button(pygame.sprite.Sprite): 
     def __init__(self,screen,XShift,YShift,SCREEN_WIDTH,SCREEN_HEIGHT):
         """creates a button object which can be turned into a variety of kinds of buttons (some of these arent actual buttons just kinda didnt wanna make 1 billion classes)
 
@@ -17,7 +17,6 @@ class Button(pygame.sprite.Sprite): #buttons are a child of sprite from pygame
             SCREEN_WIDTH (int): Pass global screen width var
             SCREEN_HEIGHT (int): Pass global screen height var
         """        
-        pygame.sprite.Sprite.__init__(self)
         self.screen = screen
         self.buttonXShift = XShift
         self.buttonYShift = YShift
@@ -25,7 +24,7 @@ class Button(pygame.sprite.Sprite): #buttons are a child of sprite from pygame
         self.SCREEN_WIDTH = SCREEN_WIDTH
         self.SCREEN_HEIGHT = SCREEN_HEIGHT
 
-    def DecoButton(self, buttonText, buttonSize, buttonColor, cardFilePath, hoverCardFilePath, mouseUpAction):
+    def DecoButton(self, buttonText, buttonSize, buttonColor, cardFilePath, hoverCardFilePath, mouseUpAction = lambda: None):
         """Generates a decorative button with two swaying cards on either side which runs mouseUpAction on mouseup (click)
 
         Args:
