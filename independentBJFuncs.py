@@ -144,6 +144,4 @@ def playRound():
             playerHand, ptotal, dealerHand, dtotal = stand(deck,playerHand,dealerHand)
     
     result(playerHand, ptotal, dealerHand, dtotal)
-        
-        
-# playRound()
+    
