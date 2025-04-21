@@ -95,9 +95,6 @@ class CSVBlackJack():
                 self.hit(playerHand)
                 self.hit(dealerHand)
                 count += 1
-        with open(self.__deckName, "w",newline="") as outfile: #deletes the 4 cards from the csv file
-            writer = csv.writer(outfile)
-            writer.writerows(cards)
 
         return playerHand, dealerHand
 
