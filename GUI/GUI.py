@@ -1,9 +1,6 @@
 import pygame
-import numpy as np
 import GUI.Button as button
-import os
-import random
-import blackjackFuncs
+import CSVBlackJack
 
 class GUI:
     """ALWAYS RUN CONSTRUCTOR FIRST,
@@ -33,59 +30,59 @@ class GUI:
         if pygame.font:
             self.font = pygame.font.Font("assets/fonts/KGPerfectPenmanship.ttf",60)
         
-        self.cardIndex = { # this just makes it easier to call the filepaths of the cards
-            "HA" : "assets/cards/3x/h/HEART-1@3x.png",
-            "H2" : "assets/cards/3x/h/HEART-2@3x.png",
-            "H3" : "assets/cards/3x/h/HEART-3@3x.png",
-            "H4" : "assets/cards/3x/h/HEART-4@3x.png",
-            "H5" : "assets/cards/3x/h/HEART-5@3x.png",
-            "H6" : "assets/cards/3x/h/HEART-6@3x.png",
-            "H7" : "assets/cards/3x/h/HEART-7@3x.png", 
-            "H8" : "assets/cards/3x/h/HEART-8@3x.png", 
-            "H9" : "assets/cards/3x/h/HEART-9@3x.png", 
-            "H10" : "assets/cards/3x/h/HEART-10@3x.png", 
-            "HJ" : "assets/cards/3x/h/HEART-11-JACK@3x.png",
-            "HQ" : "assets/cards/3x/h/HEART-12-QUEEN@3x.png", 
-            "HK" : "assets/cards/3x/h/HEART-13-KING@3x.png",
-            "DA" : "assets/cards/3x/d/DIAMOND-1@3x.png",
-            "D2" : "assets/cards/3x/d/DIAMOND-2@3x.png",
-            "D3" : "assets/cards/3x/d/DIAMOND-3@3x.png",
-            "D4" : "assets/cards/3x/d/DIAMOND-4@3x.png",
-            "D5" : "assets/cards/3x/d/DIAMOND-5@3x.png",
-            "D6" : "assets/cards/3x/d/DIAMOND-6@3x.png",
-            "D7" : "assets/cards/3x/d/DIAMOND-7@3x.png", 
-            "D8" : "assets/cards/3x/d/DIAMOND-8@3x.png", 
-            "D9" : "assets/cards/3x/d/DIAMOND-9@3x.png", 
-            "D10" : "assets/cards/3x/d/DIAMOND-10@3x.png", 
-            "DJ" : "assets/cards/3x/d/DIAMOND-11-JACK@3x.png",
-            "DQ" : "assets/cards/3x/d/DIAMOND-12-QUEEN@3x.png", 
-            "DK" : "assets/cards/3x/d/DIAMOND-13-KING@3x.png",
-            "CA" : "assets/cards/3x/c/CLUB-1@3x.png",
-            "C2" : "assets/cards/3x/c/CLUB-2@3x.png",
-            "C3" : "assets/cards/3x/c/CLUB-3@3x.png",
-            "C4" : "assets/cards/3x/c/CLUB-4@3x.png",
-            "C5" : "assets/cards/3x/c/CLUB-5@3x.png",
-            "C6" : "assets/cards/3x/c/CLUB-6@3x.png",
-            "C7" : "assets/cards/3x/c/CLUB-7@3x.png", 
-            "C8" : "assets/cards/3x/c/CLUB-8@3x.png", 
-            "C9" : "assets/cards/3x/c/CLUB-9@3x.png", 
-            "C10" : "assets/cards/3x/c/CLUB-10@3x.png", 
-            "CJ" : "assets/cards/3x/c/CLUB-11-JACK@3x.png",
-            "CQ" : "assets/cards/3x/c/CLUB-12-QUEEN@3x.png", 
-            "CK" : "assets/cards/3x/c/CLUB-13-KING@3x.png",
-            "SA" : "assets/cards/3x/s/SPADE-1@3x.png",
-            "S2" : "assets/cards/3x/s/SPADE-2@3x.png",
-            "S3" : "assets/cards/3x/s/SPADE-3@3x.png",
-            "S4" : "assets/cards/3x/s/SPADE-4@3x.png",
-            "S5" : "assets/cards/3x/s/SPADE-5@3x.png",
-            "S6" : "assets/cards/3x/s/SPADE-6@3x.png",
-            "S7" : "assets/cards/3x/s/SPADE-7@3x.png", 
-            "S8" : "assets/cards/3x/s/SPADE-8@3x.png", 
-            "S9" : "assets/cards/3x/s/SPADE-9@3x.png", 
-            "S10" : "assets/cards/3x/s/SPADE-10@3x.png", 
-            "SJ" : "assets/cards/3x/s/SPADE-11-JACK@3x.png",
-            "SQ" : "assets/cards/3x/s/SPADE-12-QUEEN@3x.png", 
-            "SK" : "assets/cards/3x/s/SPADE-13-KING@3x.png",
+        self.cardIndex = {
+            ("A", "H"): "assets/cards/3x/h/HEART-1@3x.png",
+            ("2", "H"): "assets/cards/3x/h/HEART-2@3x.png",
+            ("3", "H"): "assets/cards/3x/h/HEART-3@3x.png",
+            ("4", "H"): "assets/cards/3x/h/HEART-4@3x.png",
+            ("5", "H"): "assets/cards/3x/h/HEART-5@3x.png",
+            ("6", "H"): "assets/cards/3x/h/HEART-6@3x.png",
+            ("7", "H"): "assets/cards/3x/h/HEART-7@3x.png",
+            ("8", "H"): "assets/cards/3x/h/HEART-8@3x.png",
+            ("9", "H"): "assets/cards/3x/h/HEART-9@3x.png",
+            ("10", "H"): "assets/cards/3x/h/HEART-10@3x.png",
+            ("J", "H"): "assets/cards/3x/h/HEART-11-JACK@3x.png",
+            ("Q", "H"): "assets/cards/3x/h/HEART-12-QUEEN@3x.png",
+            ("K", "H"): "assets/cards/3x/h/HEART-13-KING@3x.png",
+            ("A", "D"): "assets/cards/3x/d/DIAMOND-1@3x.png",
+            ("2", "D"): "assets/cards/3x/d/DIAMOND-2@3x.png",
+            ("3", "D"): "assets/cards/3x/d/DIAMOND-3@3x.png",
+            ("4", "D"): "assets/cards/3x/d/DIAMOND-4@3x.png",
+            ("5", "D"): "assets/cards/3x/d/DIAMOND-5@3x.png",
+            ("6", "D"): "assets/cards/3x/d/DIAMOND-6@3x.png",
+            ("7", "D"): "assets/cards/3x/d/DIAMOND-7@3x.png",
+            ("8", "D"): "assets/cards/3x/d/DIAMOND-8@3x.png",
+            ("9", "D"): "assets/cards/3x/d/DIAMOND-9@3x.png",
+            ("10", "D"): "assets/cards/3x/d/DIAMOND-10@3x.png",
+            ("J", "D"): "assets/cards/3x/d/DIAMOND-11-JACK@3x.png",
+            ("Q", "D"): "assets/cards/3x/d/DIAMOND-12-QUEEN@3x.png",
+            ("K", "D"): "assets/cards/3x/d/DIAMOND-13-KING@3x.png",
+            ("A", "C"): "assets/cards/3x/c/CLUB-1@3x.png",
+            ("2", "C"): "assets/cards/3x/c/CLUB-2@3x.png",
+            ("3", "C"): "assets/cards/3x/c/CLUB-3@3x.png",
+            ("4", "C"): "assets/cards/3x/c/CLUB-4@3x.png",
+            ("5", "C"): "assets/cards/3x/c/CLUB-5@3x.png",
+            ("6", "C"): "assets/cards/3x/c/CLUB-6@3x.png",
+            ("7", "C"): "assets/cards/3x/c/CLUB-7@3x.png",
+            ("8", "C"): "assets/cards/3x/c/CLUB-8@3x.png",
+            ("9", "C"): "assets/cards/3x/c/CLUB-9@3x.png",
+            ("10", "C"): "assets/cards/3x/c/CLUB-10@3x.png",
+            ("J", "C"): "assets/cards/3x/c/CLUB-11-JACK@3x.png",
+            ("Q", "C"): "assets/cards/3x/c/CLUB-12-QUEEN@3x.png",
+            ("K", "C"): "assets/cards/3x/c/CLUB-13-KING@3x.png",
+            ("A", "S"): "assets/cards/3x/s/SPADE-1@3x.png",
+            ("2", "S"): "assets/cards/3x/s/SPADE-2@3x.png",
+            ("3", "S"): "assets/cards/3x/s/SPADE-3@3x.png",
+            ("4", "S"): "assets/cards/3x/s/SPADE-4@3x.png",
+            ("5", "S"): "assets/cards/3x/s/SPADE-5@3x.png",
+            ("6", "S"): "assets/cards/3x/s/SPADE-6@3x.png",
+            ("7", "S"): "assets/cards/3x/s/SPADE-7@3x.png",
+            ("8", "S"): "assets/cards/3x/s/SPADE-8@3x.png",
+            ("9", "S"): "assets/cards/3x/s/SPADE-9@3x.png",
+            ("10", "S"): "assets/cards/3x/s/SPADE-10@3x.png",
+            ("J", "S"): "assets/cards/3x/s/SPADE-11-JACK@3x.png",
+            ("Q", "S"): "assets/cards/3x/s/SPADE-12-QUEEN@3x.png",
+            ("K", "S"): "assets/cards/3x/s/SPADE-13-KING@3x.png",
             }
 
         self.__running = True
@@ -97,25 +94,27 @@ class GUI:
     def mainMenu(self): 
         """Running this function will open the main menu, this should always be run on startup
         """
+
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
         while self.__running: #begin a loop depending on the private running var
-            for event in pygame.event.get(): # checks event queue
+            self.events = pygame.event.get()
+            for event in self.events: # checks event queue
                 if event.type == pygame.QUIT: # if user presses the x on the window exit program
                     self.__running = False # exits while loop
 
             self.screen.fill((24, 64, 18))
 
-            title = button.Button(self.screen, 0,-280,(220,225,220),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            title.TextButton("Black-Ma-Jack",(600,100),60)
+            title = button.Button(self.screen, 0,-280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            title.TextButton("Black-Ma-Jack",(600,100),(220,225,220),60)
 
-            beginGame = button.Button(self.screen, 0,-150,(110, 224, 230),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            beginGame.DecoButton("Begin Game",(600,100), self.cardIndex["CA"],self.cardIndex["HA"], self.beginGame)
+            beginGame = button.Button(self.screen, 0,-150,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            beginGame.DecoButton("Begin Game",(600,100),(110, 224, 230), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.beginGame)
 
-            instructions = button.Button(self.screen, 0,50,(230, 226, 110),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            instructions.DecoButton("Instructions",(600,100), self.cardIndex["SA"],self.cardIndex["DA"], self.instructions)
+            instructions = button.Button(self.screen, 0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            instructions.DecoButton("Instructions",(600,100),(230, 226, 110), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.instructions)
 
-            quit = button.Button(self.screen, 0,250,(230, 110, 110),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            quit.DecoButton("Quit",(600,100), self.cardIndex["CA"],self.cardIndex["HA"],self.quit)
+            quit = button.Button(self.screen, 0,250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            quit.DecoButton("Quit",(600,100),(230, 110, 110), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.quit)
 
             pygame.display.flip() # prints everything to the screen, nice
 
@@ -123,30 +122,124 @@ class GUI:
         pygame.quit()
 
     def beginGame(self):
+        deckName = "cardN.csv"
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
         self.stay = True
+        csvBJ = CSVBlackJack.CSVBlackJack(deckName)
+        csvBJ.generateDeck()
+        csvBJ.shuffle()
+        # very important note, cards =! hand, hand is the tuples that represent the game state, cards are used to draw the cards on screen
+        self.playerHand = []
+        self.dealerHand = []
+        self.playerHand, self.dealerHand = csvBJ.buildHands(self.playerHand,self.dealerHand)
+        
+
+        self.dealerCards = [] 
+        self.playerCards = []
+        
+        self.__waitFlag = False
+
         while self.__running == True:
-            for event in pygame.event.get(): # checks event queue
+            self.events = pygame.event.get()
+            for event in self.events: # checks event queue
                 if event.type == pygame.QUIT: # if user presses the x on the window exit program
                     self.__running = False # exits while loop
             if self.stay == False:
                 break
-                
-            self.screen.fill((24, 64, 18))
             
-            
+            if csvBJ.calculateHand(self.playerHand) > 21: #detect if player has busted, if so, dont draw anything else, just the loss message
+                if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                    pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                    self.__waitFlag = True
+                self.screen.fill((24, 64, 18))
+                self.bust = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                self.bust.TextButton("PLAYER BUST, YOU LOSE",(700,300),(230, 110, 110),40)
 
-            self.playerHand, self.dealerHand, = blackjackFuncs.buildHands
-            self.dealerCards.append(button.Button(self.screen, -60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.dealerCards.append(button.Button(self.screen, 60, -250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.dealerCards[0].CardButton(self.cardIndex["HA"],0.2)
-            self.dealerCards[1].CardButton(self.cardIndex["HA"],0.2, flipped = True)
+            else:
+                self.screen.fill((24, 64, 18))
+                match csvBJ.getResult():
+                    case "playerTurn":
+                        
+                        self.hit = button.Button(self.screen,400,280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.hit.DecoButton("Hit",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")],self.events, lambda: csvBJ.hit(self.playerHand))
 
-            self.playerCards = []
-            self.playerCards.append(button.Button(self.screen, -60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.playerCards.append(button.Button(self.screen, 60, 250, (0,0,0),self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
-            self.playerCards[0].CardButton(self.cardIndex["HA"],0.2)
-            self.playerCards[1].CardButton(self.cardIndex["SA"],0.2)
+                        self.stand = button.Button(self.screen,400,80,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.stand.DecoButton("Stand",(300,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","S")],self.events, lambda:csvBJ.stand(self.playerHand,self.dealerHand))
+
+                        self.playerScore = button.Button(self.screen,0,50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.playerScore.TextButton(f"Your Score is currently: {csvBJ.calculateHand(self.playerHand)}", (400,100),(255,255,255),20)
+
+                        if csvBJ.getResult() != "playerTurn":
+                            self.dealerScore = button.Button(self.screen,0,-50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                            self.dealerScore.TextButton(f"Dealer's Score is currently: {csvBJ.calculateHand(self.dealerHand)}", (400,100),(255,255,255),20)
+                        else:
+                            self.dealerScore = button.Button(self.screen,0,-50,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                            self.dealerScore.TextButton(f"Dealer's Score is currently: ?", (400,100),(255,255,255),20)
+
+                        
+                        self.playerCards = []
+
+                        for i in range(len(self.playerHand)):
+                            self.playerCards.append(button.Button(self.screen,60-(i*(120)),250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                            self.playerCards[i].CardButton(self.cardIndex[self.playerHand[i]])
+                        
+                        self.dealerCards = [] 
+
+                        for i in range(len(self.dealerHand)):
+                            if csvBJ.getResult() != "playerTurn":
+                                self.dealerCards.append(button.Button(self.screen,60-i*(120),-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                                self.dealerCards[i].CardButton(self.cardIndex[self.dealerHand[i]])
+                            else:
+                                self.dealerCards.append(button.Button(self.screen,60-i*(120),-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT))
+                                if i == 1:
+                                    self.dealerCards[i].CardButton(self.cardIndex[self.dealerHand[i]],flipped=True)
+                                else:
+                                    self.dealerCards[i].CardButton(self.cardIndex[self.dealerHand[i]])
+
+                    case "dBust":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.dbust = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.dbust.TextButton("DEALER BUST, YOU WIN",(700,300),(110, 224, 230),40)
+                    case "bjWin":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.bjwin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.bjwin.TextButton("BLACKJACK!, YOU WIN",(700,300),(110, 224, 230),40)
+                    case "scoreLoss":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.scoreLoss = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.scoreLoss.TextButton("DEALER WINS, YOU LOSE",(700,300),(230, 110, 110),40)
+                    case "scoreWin":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.scoreWin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.scoreWin.TextButton("DEALER LOSES, YOU WIN",(700,300),(110, 224, 230),40)
+                    case "bjPush":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.bjPush = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.bjPush.TextButton("BLACKJACK PUSH",(700,300),(230, 226, 110),40)
+                    case "push":
+                        if self.__waitFlag == False: # flag is used to ensure the delay only runs once
+                            pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
+                            self.__waitFlag = True
+                        self.screen.fill((24, 64, 18))
+                        self.push = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+                        self.push.TextButton("PUSH",(700,300),(230, 226, 110),40)
+                    case _:
+                        pass
 
             pygame.display.flip() # prints everything to the screen, nice
 
@@ -156,7 +249,8 @@ class GUI:
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
         self.stay = True
         while self.__running == True:
-            for event in pygame.event.get(): # checks event queue
+            self.events = pygame.event.get()
+            for event in self.events: # checks event queue
                 if event.type == pygame.QUIT: # if user presses the x on the window exit program
                     self.__running = False # exits while loop
             if self.stay == False:
@@ -164,11 +258,11 @@ class GUI:
                 
             self.screen.fill((24, 64, 18))
             
-            self.howToPlay = button.Button(self.screen, 0, -300, (255, 255, 255),  self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
-            self.howToPlay.TextButton("How to Play Black-Ma-Jack",(400, 60), 20)
+            self.howToPlay = button.Button(self.screen, 0, -300, self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
+            self.howToPlay.TextButton("How to Play Black-Ma-Jack",(400, 60),(255, 255, 255), 20)
 
-            self.returnToMenu = button.Button(self.screen,250,280,(255,255,255),self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.returnToMenu.DecoButton("Return to Menu",(600,100), self.cardIndex["SA"],self.cardIndex["DA"], self.breakOut)
+            self.returnToMenu = button.Button(self.screen,250,280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.returnToMenu.DecoButton("Return to Menu",(600,100),(255,255,255), self.cardIndex[("A","C")],self.cardIndex[("A","S")],self.events, self.breakOut)
 
             
             pygame.display.flip() # prints everything to the screen, nice

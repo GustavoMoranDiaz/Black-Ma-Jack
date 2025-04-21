@@ -9,6 +9,7 @@ Description: This program holds the functions required to play games of blackjac
 
 import random
 import sys
+import csv
 
 
 
@@ -19,7 +20,7 @@ def placeBet():
 
 # Creates the deck. Will be replaced by csv card inputs I assume
 def createDeck():
-    suits = ['hearts','diamonds','spades','clubs']
+    suits = ['H','D','S','C']
     ranks = ['2','3','4','5','6','7','8','9','10','J','Q','K','A']
     deck = []
     for i in range(len(suits)):
@@ -29,22 +30,41 @@ def createDeck():
     random.shuffle(deck)
     return deck
 
+def shuffle(deck):
+    with open(deck, "r", newline='') as csvfile:
+        reader = csv.reader(csvfile)
+        rows = list(reader) #convert into a list, easier to work with in python
+
+        random.shuffle(rows) #shuffle all rows
+
+        with open(deck, "w", newline="") as outfile:
+            writer = csv.writer(outfile)
+            writer.writerows(rows)
+
 
 # Pulls a card from the deck to deal. May be bypassed by inputting cards from the csv file
-def dealCard(deck):
-    card = deck.pop(0)
+def dealCard(cards):
+    card = cards.pop(0)
     return card
 
 
 # Builds out the player and dealer hands. 
-def buildHands(deck):
-    playerHand = []
-    dealerHand = []
-    count = 0
-    while count < 2:
-        playerHand.append(dealCard(deck))
-        dealerHand.append(dealCard(deck))
-        count += 1
+def buildHands(deckName):
+    with open(deckName,"r", newline="") as csvfile:
+        reader = csv.reader(csvfile)
+        cards = list(reader)
+
+        playerHand = []
+        dealerHand = []
+        count = 0
+        while count < 2:
+            playerHand.append(tuple(dealCard(cards)))
+            dealerHand.append(tuple(dealCard(cards)))
+            count += 1
+    with open(deckName, "w",newline="") as outfile: #deletes the 4 cards from the csv file
+        writer = csv.writer(outfile)
+        writer.writerows(cards)
+
     return playerHand, dealerHand
 
 
@@ -53,7 +73,7 @@ def calculateHand(hand):
     total = 0
     numAces = 0
     for card in hand:
-        cardRank = card[1]
+        cardRank = card[0]
         if cardRank.isdigit() == True:
             cardValue = int(cardRank)
             total += cardValue
@@ -73,40 +93,32 @@ def calculateHand(hand):
     return total
 
 
-# Plays out one hand of blackjack each call
-def playRound():
-    flag = 1
-    wager = placeBet()
-    deck = createDeck()
-    playerHand, dealerHand = buildHands(deck)
 
-    while flag == 1:
-        #During the player's turn the dealer is only showing the second card in their hand
-        ptotal = calculateHand(playerHand)
-        print(f"Your hand is {playerHand} and its value is {ptotal}")
-        print(f"The dealer is showing {dealerHand[1]}")
-        
-        h_s = input("Would you like to hit or stand? (h/s): ")
-        if h_s.lower() == "h":
-            playerHand.append(dealCard(deck))
-            ptotal = calculateHand(playerHand)
-            if ptotal > 21:
-                print(f"Your hand is now {playerHand}, and its value is {ptotal}, which means you bust and lose!")
-                sys.exit(-1)
-        elif h_s.lower() == "s":
-            break
-        else: print("Unrecognized command, please try again.")
 
-    # Player's turn is over, now dealer flips their hidden card
+def hit(deck,playerHand,dealerHand):
+    playerHand.append(dealCard(deck))
+    ptotal = calculateHand(playerHand)
+    if ptotal > 21:
+        print(f"Your hand is now {playerHand}, and its value is {ptotal}, which means you bust and lose!")
+        sys.exit(-1)
+    print(f"Your hand is {playerHand} and its value is {ptotal}")
+    print(f"The dealer is showing {dealerHand[1]}")
+    return playerHand, ptotal
+    
+
+def stand(deck,playerHand,dealerHand):
+    global flag
+    flag = 0
     dtotal = calculateHand(dealerHand)
-    print(f"The dealer's hand is {dealerHand} and its value is {dtotal}")
-
+    ptotal = calculateHand(playerHand)
     while dtotal < 17:
         dealerHand.append(dealCard(deck))
         dtotal = calculateHand(dealerHand)
         print(f"The dealer hits and their hand is now {dealerHand} and its value is {dtotal}")
+    return playerHand, ptotal, dealerHand, dtotal
 
-    # Win/lose conditions
+
+def result(playerHand, ptotal, dealerHand, dtotal):
     if dtotal > 21:
         print("The dealer busts and you win!")
     elif ptotal == 21 and dtotal != 21:
@@ -121,4 +133,29 @@ def playRound():
         print(f"Push! Its a tie, you both have {ptotal}.")
         
         
-playRound()
+        
+
+# Plays out one hand of blackjack each call
+
+# Kept in for testing purposes as I split up into hit/stand/result funcs
+def playRound():
+    global flag
+    flag = 1
+    wager = placeBet()
+    deck = createDeck()
+    playerHand, dealerHand = buildHands(deck)
+    ptotal = calculateHand(playerHand)
+    print(f"Your hand is {playerHand} and its value is {ptotal}")
+    print(f"The dealer is showing {dealerHand[1]}")
+
+    while flag == 1:
+        h_s = input("Would you like to hit or stand? (h/s): ")
+        if h_s.lower() == "h":
+            playerhand,ptotal = hit(deck,playerHand,dealerHand)
+        elif h_s.lower() == "s":
+            playerHand, ptotal, dealerHand, dtotal = stand(deck,playerHand,dealerHand)
+    
+    result(playerHand, ptotal, dealerHand, dtotal)
+        
+        
+# playRound()
