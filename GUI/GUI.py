@@ -91,6 +91,13 @@ class GUI:
     def breakOut(self): # function used to break out of loops
         self.stay = False
 
+    def endScreenOptions(self): #function used to draw the end screen options of retry or main menu (mainly for code neetness)
+        self.redo = button.Button(self.screen,280,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+        self.redo.DecoButton("Retry?",(400,100),(255,255,255),self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.beginGame)
+
+        self.returnToMain = button.Button(self.screen,-280,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+        self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
+
     def mainMenu(self): 
         """Running this function will open the main menu, this should always be run on startup
         """
@@ -152,8 +159,11 @@ class GUI:
                     pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
                     self.__waitFlag = True
                 self.screen.fill((24, 64, 18))
+
                 self.bust = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                 self.bust.TextButton("PLAYER BUST, YOU LOSE",(700,300),(230, 110, 110),40)
+                
+                self.endScreenOptions()
 
             else:
                 self.screen.fill((24, 64, 18))
@@ -203,6 +213,8 @@ class GUI:
                         self.screen.fill((24, 64, 18))
                         self.dbust = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.dbust.TextButton("DEALER BUST, YOU WIN",(700,300),(110, 224, 230),40)
+
+                        self.endScreenOptions()
                     case "bjWin":
                         if self.__waitFlag == False: # flag is used to ensure the delay only runs once
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
@@ -210,6 +222,8 @@ class GUI:
                         self.screen.fill((24, 64, 18))
                         self.bjwin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.bjwin.TextButton("BLACKJACK!, YOU WIN",(700,300),(110, 224, 230),40)
+
+                        self.endScreenOptions()
                     case "scoreLoss":
                         if self.__waitFlag == False: # flag is used to ensure the delay only runs once
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
@@ -217,6 +231,8 @@ class GUI:
                         self.screen.fill((24, 64, 18))
                         self.scoreLoss = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.scoreLoss.TextButton("DEALER WINS, YOU LOSE",(700,300),(230, 110, 110),40)
+
+                        self.endScreenOptions()
                     case "scoreWin":
                         if self.__waitFlag == False: # flag is used to ensure the delay only runs once
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
@@ -224,6 +240,8 @@ class GUI:
                         self.screen.fill((24, 64, 18))
                         self.scoreWin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.scoreWin.TextButton("DEALER LOSES, YOU WIN",(700,300),(110, 224, 230),40)
+
+                        self.endScreenOptions()
                     case "bjPush":
                         if self.__waitFlag == False: # flag is used to ensure the delay only runs once
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
@@ -231,6 +249,8 @@ class GUI:
                         self.screen.fill((24, 64, 18))
                         self.bjPush = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.bjPush.TextButton("BLACKJACK PUSH",(700,300),(230, 226, 110),40)
+
+                        self.endScreenOptions()
                     case "push":
                         if self.__waitFlag == False: # flag is used to ensure the delay only runs once
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
@@ -238,6 +258,8 @@ class GUI:
                         self.screen.fill((24, 64, 18))
                         self.push = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.push.TextButton("PUSH",(700,300),(230, 226, 110),40)
+
+                        self.endScreenOptions()
                     case _:
                         pass
 
