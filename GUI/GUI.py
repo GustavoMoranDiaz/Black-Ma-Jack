@@ -1,6 +1,11 @@
 import pygame
 import GUI.Button as button
 import CSVBlackJack
+import healthClasses
+
+
+PLAYER = healthClasses.Player(100)
+DEALER = healthClasses.Dealer(100)
 
 class GUI:
     """ALWAYS RUN CONSTRUCTOR FIRST,
@@ -20,6 +25,8 @@ class GUI:
         """        
         self.SCREEN_WIDTH = 1280
         self.SCREEN_HEIGHT = 720
+        
+
 
         pygame.init() # initializes all pygame modules, required for everything else
 
@@ -98,6 +105,7 @@ class GUI:
         self.returnToMain = button.Button(self.screen,-280,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
         self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
 
+    
     def mainMenu(self): 
         """Running this function will open the main menu, this should always be run on startup
         """
@@ -110,6 +118,7 @@ class GUI:
                     self.__running = False # exits while loop
 
             self.screen.fill((24, 64, 18))
+            
 
             title = button.Button(self.screen, 0,-280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             title.TextButton("Black-Ma-Jack",(600,100),(220,225,220),60)
@@ -127,6 +136,60 @@ class GUI:
 
             self.clock.tick(60)
         pygame.quit()
+        
+        
+    def buildHealthBar(self): # function to create current health bar each new hand
+        self.maxHP = 100
+        pygame.draw.rect(self.screen, "red", (50,625,self.maxHP,15))
+        pygame.draw.rect(self.screen, "green", (50,625,PLAYER.getHealth(),15))
+        
+        pygame.draw.rect(self.screen, "red", (50,675,self.maxHP,15))
+        pygame.draw.rect(self.screen, "green", (50,675,DEALER.getHealth(),15))
+        
+        font = pygame.font.SysFont("Arial",15)
+        img = font.render("Player Health", True, (255,255,255))
+        self.screen.blit(img, (50,600))
+        
+        font = pygame.font.SysFont("Arial",15)
+        img = font.render("Dealer Health", True, (255,255,255))
+        self.screen.blit(img, (50,650))
+
+
+    def updateHealthBar(self, ps, ds, loser): # function to update the health bars by removing the difference in hand values from the respective health bar
+        self.maxHP = 100
+        diff = abs(ps - ds)
+        global PLAYER
+        global DEALER
+        if loser.lower() == 'player':
+            PLAYER.setHealth(PLAYER.getHealth() - diff)
+        elif loser.lower() == 'dealer':
+            DEALER.setHealth(DEALER.getHealth() - diff)
+            
+        pygame.draw.rect(self.screen, "red", (50,625,self.maxHP,15))
+        pygame.draw.rect(self.screen, "green", (50,625,PLAYER.getHealth(),15))
+        
+        pygame.draw.rect(self.screen, "red", (50,675,self.maxHP,15))
+        pygame.draw.rect(self.screen, "green", (50,675,DEALER.getHealth(),15))
+
+
+    def gameOver(self): # function to handle event where either the player's health or dealer's health reaches zero
+        self.screen.fill((24, 64, 18))
+        self.buildHealthBar()
+            
+        if DEALER.getHealth() <= 0:
+            self.totalWin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.totalWin.TextButton("DEALER DEFEATED, PLAYER WINS",(700,300),(230, 110, 110),40)
+            self.returnToMain = button.Button(self.screen,0,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
+        
+        if PLAYER.getHealth() <= 0:
+            self.totalWin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.totalWin.TextButton("PLAYER DEFEATED, DEALER WINS",(700,300),(230, 110, 110),40)
+            self.returnToMain = button.Button(self.screen,0,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
+
+
+
 
     def beginGame(self):
         deckName = "cardN.csv"
@@ -144,6 +207,10 @@ class GUI:
         self.dealerCards = [] 
         self.playerCards = []
         
+        global PLAYER
+        global DEALER
+        canTakeDMG = True
+        
         self.__waitFlag = False
 
         while self.__running == True:
@@ -159,14 +226,21 @@ class GUI:
                     pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
                     self.__waitFlag = True
                 self.screen.fill((24, 64, 18))
+                self.buildHealthBar()
 
                 self.bust = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                 self.bust.TextButton("PLAYER BUST, YOU LOSE",(700,300),(230, 110, 110),40)
-                
-                self.endScreenOptions()
+                while canTakeDMG == True:
+                    self.updateHealthBar(csvBJ.calculateHand(self.playerHand), csvBJ.calculateHand(self.dealerHand), 'player')
+                    canTakeDMG = False
+                if PLAYER.getHealth() <= 0 or DEALER.getHealth() <= 0:
+                    self.gameOver()
+                else:
+                    self.endScreenOptions()
 
             else:
                 self.screen.fill((24, 64, 18))
+                self.buildHealthBar()
                 match csvBJ.getResult():
                     case "playerTurn":
                         
@@ -211,42 +285,67 @@ class GUI:
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
                             self.__waitFlag = True
                         self.screen.fill((24, 64, 18))
+                        self.buildHealthBar()
                         self.dbust = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.dbust.TextButton("DEALER BUST, YOU WIN",(700,300),(110, 224, 230),40)
-
-                        self.endScreenOptions()
+                        while canTakeDMG == True:
+                            self.updateHealthBar(csvBJ.calculateHand(self.playerHand), csvBJ.calculateHand(self.dealerHand), 'dealer')
+                            canTakeDMG = False
+                        if PLAYER.getHealth() <= 0 or DEALER.getHealth() <= 0:
+                            self.gameOver()
+                        else:
+                            self.endScreenOptions()
                     case "bjWin":
                         if self.__waitFlag == False: # flag is used to ensure the delay only runs once
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
                             self.__waitFlag = True
                         self.screen.fill((24, 64, 18))
+                        self.buildHealthBar()
                         self.bjwin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.bjwin.TextButton("BLACKJACK!, YOU WIN",(700,300),(110, 224, 230),40)
-
-                        self.endScreenOptions()
+                        while canTakeDMG == True:
+                            self.updateHealthBar(csvBJ.calculateHand(self.playerHand), csvBJ.calculateHand(self.dealerHand), 'dealer')
+                            canTakeDMG = False
+                        if PLAYER.getHealth() <= 0 or DEALER.getHealth() <= 0:
+                            self.gameOver()
+                        else:
+                            self.endScreenOptions()
                     case "scoreLoss":
                         if self.__waitFlag == False: # flag is used to ensure the delay only runs once
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
                             self.__waitFlag = True
                         self.screen.fill((24, 64, 18))
+                        self.buildHealthBar()
                         self.scoreLoss = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.scoreLoss.TextButton("DEALER WINS, YOU LOSE",(700,300),(230, 110, 110),40)
-
-                        self.endScreenOptions()
+                        while canTakeDMG == True:
+                            self.updateHealthBar(csvBJ.calculateHand(self.playerHand), csvBJ.calculateHand(self.dealerHand), 'player')
+                            canTakeDMG = False
+                        if PLAYER.getHealth() <= 0 or DEALER.getHealth() <= 0:
+                            self.gameOver()
+                        else:
+                            self.endScreenOptions()
                     case "scoreWin":
                         if self.__waitFlag == False: # flag is used to ensure the delay only runs once
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
                             self.__waitFlag = True
                         self.screen.fill((24, 64, 18))
+                        self.buildHealthBar()
                         self.scoreWin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.scoreWin.TextButton("DEALER LOSES, YOU WIN",(700,300),(110, 224, 230),40)
-
-                        self.endScreenOptions()
+                        while canTakeDMG == True:
+                            self.updateHealthBar(csvBJ.calculateHand(self.playerHand), csvBJ.calculateHand(self.dealerHand), 'dealer')
+                            canTakeDMG = False
+                        if PLAYER.getHealth() <= 0 or DEALER.getHealth() <= 0:
+                            self.gameOver()
+                        else:
+                            self.endScreenOptions()
                     case "bjPush":
                         if self.__waitFlag == False: # flag is used to ensure the delay only runs once
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
                             self.__waitFlag = True
                         self.screen.fill((24, 64, 18))
+                        self.buildHealthBar()
                         self.bjPush = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.bjPush.TextButton("BLACKJACK PUSH",(700,300),(230, 226, 110),40)
 
@@ -256,6 +355,7 @@ class GUI:
                             pygame.time.wait(1000) # delay is here to allow player to see what card busted them before going to the loss screen
                             self.__waitFlag = True
                         self.screen.fill((24, 64, 18))
+                        self.buildHealthBar()
                         self.push = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
                         self.push.TextButton("PUSH",(700,300),(230, 226, 110),40)
 
