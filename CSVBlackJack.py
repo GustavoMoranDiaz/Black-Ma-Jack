@@ -61,6 +61,14 @@ class CSVBlackJack():
     # Calculates hand value totals; includes ace's 1/11 mechanic
     # Credit Andrew C.
     def calculateHand(self,hand):
+        """given a list of cards in the form of a list of tuples 
+
+        Args:
+            hand (list): list of tuples where each tuple holds the rank then the suit i.e. 3 of clubs = (3,C)
+
+        Returns:
+            int: calculated score that, if possible, does not bust
+        """        
         total = 0
         numAces = 0
         for card in hand:
