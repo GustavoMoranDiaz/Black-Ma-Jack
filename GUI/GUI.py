@@ -203,6 +203,7 @@ class GUI:
         self.dealerHand = []
         self.playerHand, self.dealerHand = csvBJ.buildHands(self.playerHand,self.dealerHand)
         
+        
 
         self.dealerCards = [] 
         self.playerCards = []
@@ -379,6 +380,10 @@ class GUI:
                 break
                 
             self.screen.fill((24, 64, 18))
+
+            self.instructionTextSurface = pygame.image.load("assets/instructions.png")
+            self.instructionTextRect = self.instructionTextSurface.get_rect(center=(self.SCREEN_WIDTH/2,self.SCREEN_HEIGHT/2))
+            self.screen.blit(self.instructionTextSurface,self.instructionTextRect)
             
             self.howToPlay = button.Button(self.screen, 0, -300, self.SCREEN_WIDTH, self.SCREEN_HEIGHT)
             self.howToPlay.TextButton("How to Play Black-Ma-Jack",(400, 60),(255, 255, 255), 20)
