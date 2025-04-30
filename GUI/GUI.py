@@ -4,8 +4,8 @@ import CSVBlackJack
 import healthClasses
 
 
-PLAYER = healthClasses.Player(100)
-DEALER = healthClasses.Dealer(100)
+PLAYER = healthClasses.Player(30)
+DEALER = healthClasses.Dealer(30)
 
 class GUI:
     """ALWAYS RUN CONSTRUCTOR FIRST,
@@ -105,7 +105,11 @@ class GUI:
         self.returnToMain = button.Button(self.screen,-280,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
         self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
 
-    
+    def upgradeC(self):
+        self.screen.fill((99, 0, 99))
+        self.returnToMain = button.Button(self.screen,0,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+        self.returnToMain.DecoButton("Continue",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
+                
     def mainMenu(self): 
         """Running this function will open the main menu, this should always be run on startup
         """
@@ -139,7 +143,7 @@ class GUI:
         
         
     def buildHealthBar(self): # function to create current health bar each new hand
-        self.maxHP = 100
+        self.maxHP = 30
         pygame.draw.rect(self.screen, "red", (50,625,self.maxHP,15))
         pygame.draw.rect(self.screen, "green", (50,625,PLAYER.getHealth(),15))
         
@@ -156,8 +160,14 @@ class GUI:
 
 
     def updateHealthBar(self, ps, ds, loser): # function to update the health bars by removing the difference in hand values from the respective health bar
-        self.maxHP = 100
+        self.maxHP = 30
+        if ps > 21:
+            ps = 0
+        if ds > 21:
+            ds = 0
         diff = abs(ps - ds)
+        if ps == 21 or ds == 21:
+            diff*=2
         global PLAYER
         global DEALER
         if loser.lower() == 'player':
@@ -181,16 +191,17 @@ class GUI:
             self.totalWin.TextButton("DEALER DEFEATED, PLAYER WINS",(700,300),(230, 110, 110),40)
             self.returnToMain = button.Button(self.screen,0,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
-        
+            self.upgrade = button.Button(self.screen,0,250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.upgrade.DecoButton("Upgrade and Continue",(700,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.upgradeC)
+            
         if PLAYER.getHealth() <= 0:
             self.totalWin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             self.totalWin.TextButton("PLAYER DEFEATED, DEALER WINS",(700,300),(230, 110, 110),40)
             self.returnToMain = button.Button(self.screen,0,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
-
-
-
-
+            self.upgrade = button.Button(self.screen,0,250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.upgrade.DecoButton("Upgrade and Continue",(700,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.upgradeC)
+            
     def beginGame(self):
         deckName = "cardN.csv"
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
@@ -202,7 +213,6 @@ class GUI:
         self.playerHand = []
         self.dealerHand = []
         self.playerHand, self.dealerHand = csvBJ.buildHands(self.playerHand,self.dealerHand)
-        
         
 
         self.dealerCards = [] 
@@ -380,7 +390,7 @@ class GUI:
                 break
                 
             self.screen.fill((24, 64, 18))
-
+            
             self.instructionTextSurface = pygame.image.load("assets/instructions.png")
             self.instructionTextRect = self.instructionTextSurface.get_rect(center=(self.SCREEN_WIDTH/2,self.SCREEN_HEIGHT/2))
             self.screen.blit(self.instructionTextSurface,self.instructionTextRect)
