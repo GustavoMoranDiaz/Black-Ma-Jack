@@ -114,7 +114,27 @@ class GUI:
                     self.__running = False # exits while loop
             self.screen.fill((99, 0, 99))
             while i < 1:
-                mh = PLAYER.addH(10)
+                PLAYER.setHealth(PLAYER.getMH)
+                DEALER.setHealth(30)
+                i = 1
+            self.addH = button.Button(self.screen,0,200,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.addH.DecoButton("Add 10 Health",(600,100),(110, 224, 230), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.upgradeH)
+            self.addH = button.Button(self.screen,0,-200,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.addH.DecoButton("Debuff Dealer Health",(600,100),(110, 224, 230), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.debuffD)
+            pygame.display.flip() # prints everything to the screen, nice
+
+            self.clock.tick(60)
+    def upgradeH(self):
+        pygame.display.set_caption("Upgrade")
+        i = 0
+        while self.__running:
+            self.events = pygame.event.get()
+            for event in self.events: # checks event queue
+                if event.type == pygame.QUIT: # if user presses the x on the window exit program
+                    self.__running = False # exits while loop
+            self.screen.fill((99, 0, 99))
+            while i < 1:
+                PLAYER.addH(10)
                 PLAYER.setHealth(PLAYER.getMH())
                 DEALER.setHealth(30)
                 i = 1
@@ -123,10 +143,28 @@ class GUI:
             pygame.display.flip() # prints everything to the screen, nice
 
             self.clock.tick(60)
+    def debuffD(self):
+        pygame.display.set_caption("Upgrade")
+        i = 0
+        while self.__running:
+            self.events = pygame.event.get()
+            for event in self.events: # checks event queue
+                if event.type == pygame.QUIT: # if user presses the x on the window exit program
+                    self.__running = False # exits while loop
+            self.screen.fill((99, 0, 99))
+            while i < 1:
+                PLAYER.setHealth(PLAYER.getMH())
+                DEALER.setHealth(20)
+                i = 1
+            self.addH = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
+            self.addH.DecoButton("Dealer 20",(600,100),(110, 224, 230), self.cardIndex[("A","C")],self.cardIndex[("A","H")],self.events, self.beginGame)
+            pygame.display.flip() # prints everything to the screen, nice
+
+            self.clock.tick(60)
     def mainMenu(self): 
         """Running this function will open the main menu, this should always be run on startup
         """
-
+        i = 0
         pygame.display.set_caption("Black-Ma-Jack") # edits the little title of a window
         while self.__running: #begin a loop depending on the private running var
             self.events = pygame.event.get()
@@ -136,7 +174,10 @@ class GUI:
 
             self.screen.fill((24, 64, 18))
             
-
+            while i < 1:
+                PLAYER.setHealth(30)
+                DEALER.setHealth(30)
+                i = 1
             title = button.Button(self.screen, 0,-280,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             title.TextButton("Black-Ma-Jack",(600,100),(220,225,220),60)
 
@@ -207,12 +248,12 @@ class GUI:
     def gameOver(self): # function to handle event where either the player's health or dealer's health reaches zero
         self.screen.fill((24, 64, 18))
         self.buildHealthBar()
-            
+ 
         if DEALER.getHealth() <= 0:
             self.totalWin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             self.totalWin.TextButton("DEALER DEFEATED, PLAYER WINS",(700,300),(230, 110, 110),40)
             self.returnToMain = button.Button(self.screen,0,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
+            self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.mainMenu)
             self.upgrade = button.Button(self.screen,0,250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             self.upgrade.DecoButton("Upgrade and Continue",(700,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.upgradeC)
             
@@ -220,7 +261,7 @@ class GUI:
             self.totalWin = button.Button(self.screen,0,0,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
             self.totalWin.TextButton("PLAYER DEFEATED, DEALER WINS",(700,300),(230, 110, 110),40)
             self.returnToMain = button.Button(self.screen,0,-250,self.SCREEN_WIDTH,self.SCREEN_HEIGHT)
-            self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.breakOut)
+            self.returnToMain.DecoButton("Main Menu",(400,100),(255,255,255),self.cardIndex[("A","S")],self.cardIndex[("A","D")],self.events, self.mainMenu)
             
     def beginGame(self):
         deckName = "cardN.csv"
