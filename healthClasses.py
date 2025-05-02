@@ -13,10 +13,13 @@ import pygame
 class Player:
     def __init__(self, health):
         self.health = health
-        
+        self.maxH = 30
+    def getMH(self):
+        return self.maxH    
     def getHealth(self):
         return self.health
-    
+    def addH(self, newH):
+        self.maxH += newH    
     def setHealth(self, newHealth):
         self.health = newHealth
         
